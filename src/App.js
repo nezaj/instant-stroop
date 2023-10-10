@@ -21,7 +21,7 @@ import {
 
 // Debug values
 // ------------------
-const DEBUG_DEFAULT_SCENE = "Main";
+const DEBUG_DEFAULT_SCENE = "GameOverSingleplayer";
 const DEBUG_SHOW_SCREEN_BUTTONS = false;
 
 // Instant init

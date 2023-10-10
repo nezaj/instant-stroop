@@ -16,7 +16,7 @@ function Screen({ data }) {
 
       {/* Color Label */}
       <View className="flex-1 justify-center items-center">
-        <Text className="font-bold text-6xl">RED</Text>
+        <Text className="font-bold text-5xl">RED</Text>
       </View>
 
       {/* Grid Boxes */}
