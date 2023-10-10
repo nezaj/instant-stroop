@@ -4,7 +4,8 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
 
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -19,10 +20,9 @@ import {
   WaitingRoom,
 } from "@/components/scenes";
 
-// Debug values
+// Consts
 // ------------------
-const DEBUG_DEFAULT_SCENE = "Singleplayer";
-const DEBUG_SHOW_SCREEN_BUTTONS = false;
+const DEFAULT_SCENE = "Main";
 
 // Instant init
 // ------------------
@@ -33,89 +33,62 @@ init({
   websocketURI: "wss://api.instantdb.com/runtime/session",
 });
 
+// Navigation
+// ------------------
+const Stack = createStackNavigator();
+
+function AppNavigator({ data }) {
+  return (
+    <Stack.Navigator
+      initialRouteName={DEFAULT_SCENE}
+      screenOptions={
+        {
+          // headerBackTitleVisible: false,
+          // headerLeft: () => null,
+        }
+      }
+    >
+      <Stack.Screen initialParams={data} name="Main" component={Main} />
+      <Stack.Screen
+        initialParams={data}
+        name="Singleplayer"
+        component={Singleplayer}
+      />
+      <Stack.Screen
+        name="GameOverSingleplayer"
+        initialParams={data}
+        component={GameOverSingleplayer}
+      />
+      <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
+      <Stack.Screen name="Multiplayer" component={Multiplayer} />
+      <Stack.Screen
+        name="GameOverMultiplayer"
+        initialParams={data}
+        component={GameOverMultiplayer}
+      />
+      <Stack.Screen initialParams={data} name="JoinGame" component={JoinGame} />
+      <Stack.Screen
+        initialParams={data}
+        name="HowToPlay"
+        component={HowToPlay}
+      />
+      <Stack.Screen initialParams={data} name="Settings" component={Settings} />
+    </Stack.Navigator>
+  );
+}
+
 // App
 // ------------------
 function App() {
-  const [currentScene, setCurrentScene] = useState(DEBUG_DEFAULT_SCENE);
   const { isLoading, error, data } = useQuery({});
   if (isLoading) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
-  let SceneComponent;
-  switch (currentScene) {
-    case "Main":
-      SceneComponent = Main;
-      break;
-    case "Singleplayer":
-      SceneComponent = Singleplayer;
-      break;
-    case "GameOverSingleplayer":
-      SceneComponent = GameOverSingleplayer;
-      break;
-    case "WaitingRoom":
-      SceneComponent = WaitingRoom;
-      break;
-    case "Multiplayer":
-      SceneComponent = Multiplayer;
-      break;
-    case "GameOverMultiplayer":
-      SceneComponent = GameOverMultiplayer;
-      break;
-    case "JoinGame":
-      SceneComponent = JoinGame;
-      break;
-    case "HowToPlay":
-      SceneComponent = HowToPlay;
-      break;
-    case "Settings":
-      SceneComponent = Settings;
-      break;
-    default:
-      SceneComponent = Main;
-      break;
-  }
-
   return (
     <SafeAreaProvider>
-      <SceneComponent data={data} />
-
-      {DEBUG_SHOW_SCREEN_BUTTONS && (
-        <View className="flex-row flex-wrap justify-center mb-8">
-          <Button title="Main" onPress={() => setCurrentScene("Main")} />
-          <Button
-            title="Singleplayer"
-            onPress={() => setCurrentScene("Singleplayer")}
-          />
-          <Button
-            title="GameOverSingleplayer"
-            onPress={() => setCurrentScene("GameOverSingleplayer")}
-          />
-          <Button
-            title="WaitingRoom"
-            onPress={() => setCurrentScene("WaitingRoom")}
-          />
-          <Button
-            title="Multiplayer"
-            onPress={() => setCurrentScene("Multiplayer")}
-          />
-          <Button
-            title="GameOverMultiplayer"
-            onPress={() => setCurrentScene("GameOverMultiplayer")}
-          />
-          <Button
-            title="JoinGame"
-            onPress={() => setCurrentScene("JoinGame")}
-          />
-          <Button
-            title="HowToPlay"
-            onPress={() => setCurrentScene("HowToPlay")}
-          />
-          <Button
-            title="Settings"
-            onPress={() => setCurrentScene("Settings")}
-          />
-        </View>
-      )}
+      <NavigationContainer>
+        <AppNavigator data={data} />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }

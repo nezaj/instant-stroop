@@ -16,7 +16,8 @@ const colorMap = {
   "text-yellow-400": { color: "rgb(250 204 21)" },
 };
 
-function Screen({ data }) {
+function Screen({ route }) {
+  const { data } = route.params;
   const [score, setScore] = useState(0);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
@@ -35,7 +36,7 @@ function Screen({ data }) {
   return (
     <SafeView className="flex-1">
       {/* Top Bar */}
-      <View className="flex-row justify-between items-center p-8">
+      <View className="flex-row justify-between items-center px-8">
         <View className="flex-col justify-between space-y-1">
           <Text className="font-bold text-xl">Time: 30</Text>
           <Text className="font-bold text-xl">Best: 25</Text>

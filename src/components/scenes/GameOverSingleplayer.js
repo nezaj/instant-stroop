@@ -5,9 +5,11 @@ import SafeView from "@/components/shared/SafeView";
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
 
-function Screen({ data }) {
+function Screen({ navigation, route }) {
+  const { data } = route.params;
+  console.log(route);
   return (
-    <SafeView className="flex-1 m-8">
+    <SafeView className="flex-1 mx-8">
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
         <View className="flex-col justify-between space-y-1">
@@ -30,12 +32,20 @@ function Screen({ data }) {
 
       {/* Buttons */}
       <View className="flex-1 justify-center space-y-4">
-        <TouchableOpacity className={`${mainButtonStyle}`}>
+        <TouchableOpacity
+          className={`${mainButtonStyle}`}
+          onPress={() => navigation.navigate("Singleplayer")}
+        >
           <Text className={`${textStyle}`}>Play Again</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className={`${mainButtonStyle}`}>
-          <Text className={`${textStyle}`}>Menu</Text>
+          <Text
+            className={`${textStyle}`}
+            onPress={() => navigation.navigate("Main")}
+          >
+            Menu
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeView>
