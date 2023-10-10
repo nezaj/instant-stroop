@@ -1,22 +1,29 @@
 import { Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
 
+// Consts
+// ------------------
+
+// Styles
+// ------------------
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
 
-function Screen({ navigation, route }) {
-  const { data } = route.params;
-  console.log(route);
+// Screen
+// ------------------
+function GameOverSingleplayer({ navigation, route }) {
+  const { data, score } = route.params;
   return (
     <SafeView className="flex-1 mx-8">
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
         <View className="flex-col justify-between space-y-1">
           <Text className="font-bold text-xl">Time: 0</Text>
-          <Text className="font-bold text-xl">Best: 25</Text>
+          <Text className="font-bold text-xl">Best: 30</Text>
         </View>
-        <Text className="font-bold text-5xl">8</Text>
+        <Text className="font-bold text-5xl">{score}</Text>
       </View>
 
       {/* Game Over */}
@@ -25,6 +32,7 @@ function Screen({ navigation, route }) {
       </View>
 
       {/* High Score */}
+
       <View className="flex-1 justify-center items-center mt-16 space-y-16">
         <Text className="font-bold text-2xl">New High Score!</Text>
         <Text className="w-full font-bold text-5xl text-center">🏆</Text>
@@ -34,7 +42,9 @@ function Screen({ navigation, route }) {
       <View className="flex-1 justify-center space-y-4">
         <TouchableOpacity
           className={`${mainButtonStyle}`}
-          onPress={() => navigation.navigate("Singleplayer")}
+          onPress={() =>
+            navigation.navigate("Singleplayer", { resetGame: true })
+          }
         >
           <Text className={`${textStyle}`}>Play Again</Text>
         </TouchableOpacity>
@@ -52,4 +62,4 @@ function Screen({ navigation, route }) {
   );
 }
 
-export default Screen;
+export default GameOverSingleplayer;

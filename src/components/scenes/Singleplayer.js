@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
 
@@ -9,6 +9,9 @@ function chooseRandomColor() {
   return colors[randomIndex];
 }
 
+// Consts
+// ------------------
+const DEFAULT_SCENE = "Singleplayer";
 const colorMap = {
   "text-red-400": { color: "rgb(248 113 113)" },
   "text-green-400": { color: "rgb(74 222 128)" },
@@ -16,12 +19,50 @@ const colorMap = {
   "text-yellow-400": { color: "rgb(250 204 21)" },
 };
 
-function Screen({ route }) {
-  const { data } = route.params;
-  const [score, setScore] = useState(0);
+const DEFAULT_CLOCK = 5;
+const DEFAULT_SCORE = 0;
+
+// Screen
+// ------------------
+function Singleplayer({ route, navigation }) {
+  const { data, resetGame } = route.params;
+  const [clock, setClock] = useState(DEFAULT_CLOCK);
+  const [score, setScore] = useState(DEFAULT_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
+
+  // Reset Game
+  useEffect(() => {
+    if (resetGame) {
+      setClock(DEFAULT_CLOCK);
+      setScore(DEFAULT_SCORE);
+      setLabel(chooseRandomColor());
+      setColor(chooseRandomColor());
+      route.params.resetGame = false;
+    }
+  }, [resetGame]);
+
+  // Countdown
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setClock((prevClock) => {
+        if (prevClock < 2) {
+          return 0;
+        }
+        return prevClock - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // End Game
+  useEffect(() => {
+    if (clock === 0) {
+      navigation.navigate("GameOverSingleplayer", { score });
+    }
+  }, [clock]);
 
   const onPress = (sqColor) => {
     if (sqColor == label) {
@@ -38,7 +79,7 @@ function Screen({ route }) {
       {/* Top Bar */}
       <View className="flex-row justify-between items-center px-8">
         <View className="flex-col justify-between space-y-1">
-          <Text className="font-bold text-xl">Time: 30</Text>
+          <Text className="font-bold text-xl">Time: {clock}</Text>
           <Text className="font-bold text-xl">Best: 25</Text>
         </View>
         <Text className="font-bold text-5xl">{score}</Text>
@@ -77,4 +118,4 @@ function Screen({ route }) {
   );
 }
 
-export default Screen;
+export default Singleplayer;

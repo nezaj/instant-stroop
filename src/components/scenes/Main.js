@@ -6,7 +6,7 @@ const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const minorButtonStyle = "w-32 h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
 
-function Screen({ navigation, route }) {
+function Main({ navigation, route }) {
   const { data } = route.params;
   return (
     <SafeView className="flex-1 items-center">
@@ -45,4 +45,4 @@ function Screen({ navigation, route }) {
   );
 }
 
-export default Screen;
+export default Main;

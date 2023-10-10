@@ -22,7 +22,7 @@ import {
 
 // Consts
 // ------------------
-const DEFAULT_SCENE = "Main";
+const DEFAULT_SCENE = "Singleplayer";
 
 // Instant init
 // ------------------
@@ -48,31 +48,39 @@ function AppNavigator({ data }) {
         }
       }
     >
-      <Stack.Screen initialParams={data} name="Main" component={Main} />
+      <Stack.Screen initialParams={{ data }} name="Main" component={Main} />
       <Stack.Screen
-        initialParams={data}
+        initialParams={{ data }}
         name="Singleplayer"
         component={Singleplayer}
       />
       <Stack.Screen
         name="GameOverSingleplayer"
-        initialParams={data}
+        initialParams={{ data }}
         component={GameOverSingleplayer}
       />
       <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
       <Stack.Screen name="Multiplayer" component={Multiplayer} />
       <Stack.Screen
         name="GameOverMultiplayer"
-        initialParams={data}
+        initialParams={{ data }}
         component={GameOverMultiplayer}
       />
-      <Stack.Screen initialParams={data} name="JoinGame" component={JoinGame} />
       <Stack.Screen
-        initialParams={data}
+        initialParams={{ data }}
+        name="JoinGame"
+        component={JoinGame}
+      />
+      <Stack.Screen
+        initialParams={{ data }}
         name="HowToPlay"
         component={HowToPlay}
       />
-      <Stack.Screen initialParams={data} name="Settings" component={Settings} />
+      <Stack.Screen
+        initialParams={{ data }}
+        name="Settings"
+        component={Settings}
+      />
     </Stack.Navigator>
   );
 }
@@ -92,5 +100,7 @@ function App() {
     </SafeAreaProvider>
   );
 }
+
+
 
 export default App;
