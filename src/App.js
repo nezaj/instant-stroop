@@ -6,8 +6,26 @@ import {
 } from "react-native-safe-area-context";
 import React, { useState } from "react";
 
-import SafeView from "./components/SafeView";
+import SafeView from "./components/shared/SafeView";
+import {
+  GameOverMultiplayer,
+  GameOverSingleplayer,
+  HowToPlay,
+  JoinGame,
+  Main,
+  Multiplayer,
+  Settings,
+  Singleplayer,
+  WaitingRoom,
+} from "./components/scenes";
 
+// Debug values
+// ------------------
+const DEBUG_DEFAULT_SCENE = "Singleplayer";
+const DEBUG_SHOW_SCREEN_BUTTONS = true;
+
+// Instant init
+// ------------------
 const APP_ID = "24b522b3-0ef8-4939-9646-658aac8716af";
 
 init({
@@ -15,8 +33,10 @@ init({
   websocketURI: "wss://api.instantdb.com/runtime/session",
 });
 
+// App
+// ------------------
 function App() {
-  const [currentScene, setCurrentScene] = useState("Main"); // Initial scene is 'Main'
+  const [currentScene, setCurrentScene] = useState(DEBUG_DEFAULT_SCENE);
   const { isLoading, error, data } = useQuery({});
   if (isLoading) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -26,11 +46,29 @@ function App() {
     case "Main":
       SceneComponent = Main;
       break;
-    case "Foo":
-      SceneComponent = Foo;
+    case "Singleplayer":
+      SceneComponent = Singleplayer;
       break;
-    case "Bar":
-      SceneComponent = Bar;
+    case "GameOverSingleplayer":
+      SceneComponent = GameOverSingleplayer;
+      break;
+    case "WaitingRoom":
+      SceneComponent = WaitingRoom;
+      break;
+    case "Multiplayer":
+      SceneComponent = Multiplayer;
+      break;
+    case "GameOverMultiplayer":
+      SceneComponent = GameOverMultiplayer;
+      break;
+    case "JoinGame":
+      SceneComponent = JoinGame;
+      break;
+    case "HowToPlay":
+      SceneComponent = HowToPlay;
+      break;
+    case "Settings":
+      SceneComponent = Settings;
       break;
     default:
       SceneComponent = Main;
@@ -41,36 +79,44 @@ function App() {
     <SafeAreaProvider>
       <SceneComponent data={data} />
 
-      <View className="flex-row justify-center mb-8">
-        <Button title="Show Main" onPress={() => setCurrentScene("Main")} />
-        <Button title="Show Foo" onPress={() => setCurrentScene("Foo")} />
-        <Button title="Show Bar" onPress={() => setCurrentScene("Bar")} />
-      </View>
+      {DEBUG_SHOW_SCREEN_BUTTONS && (
+        <View className="flex-row flex-wrap justify-center mb-8">
+          <Button title="Main" onPress={() => setCurrentScene("Main")} />
+          <Button
+            title="Singleplayer"
+            onPress={() => setCurrentScene("Singleplayer")}
+          />
+          <Button
+            title="GameOverSingleplayer"
+            onPress={() => setCurrentScene("GameOverSingleplayer")}
+          />
+          <Button
+            title="WaitingRoom"
+            onPress={() => setCurrentScene("WaitingRoom")}
+          />
+          <Button
+            title="Multiplayer"
+            onPress={() => setCurrentScene("Multiplayer")}
+          />
+          <Button
+            title="GameOverMultiplayer"
+            onPress={() => setCurrentScene("GameOverMultiplayer")}
+          />
+          <Button
+            title="JoinGame"
+            onPress={() => setCurrentScene("JoinGame")}
+          />
+          <Button
+            title="HowToPlay"
+            onPress={() => setCurrentScene("HowToPlay")}
+          />
+          <Button
+            title="Settings"
+            onPress={() => setCurrentScene("Settings")}
+          />
+        </View>
+      )}
     </SafeAreaProvider>
-  );
-}
-
-function Main({ data }) {
-  return (
-    <SafeView className="flex-1 justify-center items-center">
-      <Text>Hello World!</Text>
-    </SafeView>
-  );
-}
-
-function Foo({ data }) {
-  return (
-    <SafeView className="flex-1 justify-center items-center">
-      <Text>Foo!</Text>
-    </SafeView>
-  );
-}
-
-function Bar({ data }) {
-  return (
-    <SafeView className="flex-1 justify-center items-center">
-      <Text>Bar!</Text>
-    </SafeView>
   );
 }
 
