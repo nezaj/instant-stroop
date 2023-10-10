@@ -17,7 +17,9 @@ function Main({ navigation, route }) {
         <TouchableOpacity className={`${mainButtonStyle}`}>
           <Text
             className={`${textStyle}`}
-            onPress={() => navigation.navigate("Singleplayer")}
+            onPress={() =>
+              navigation.navigate("Singleplayer", { resetGame: true })
+            }
           >
             Start
           </Text>
