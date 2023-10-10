@@ -24,21 +24,32 @@ function App() {
   );
 }
 
-function Main({ data }) {
+function SafeView({ children, style, ...props }) {
   const insets = useSafeAreaInsets();
 
   return (
     <View
-      className="flex-1 justify-center items-center"
-      style={{
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
-      }}
+      style={[
+        {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+        style,
+      ]}
+      {...props}
     >
-      <Text>Hello World!</Text>
+      {children}
     </View>
+  );
+}
+
+function Main({ data }) {
+  return (
+    <SafeView className="flex-1 justify-center items-center">
+      <Text>Hello World!</Text>
+    </SafeView>
   );
 }
 
