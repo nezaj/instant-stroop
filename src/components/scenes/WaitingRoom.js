@@ -1,6 +1,6 @@
 import { Text } from "react-native";
 
-import SafeView from "../shared/SafeView";
+import SafeView from "@/components/shared/SafeView";
 
 function Screen({ data }) {
   return (
@@ -11,7 +11,3 @@ function Screen({ data }) {
 }
 
 export default Screen;
-
-
-
-

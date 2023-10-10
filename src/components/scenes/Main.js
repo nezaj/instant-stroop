@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 
-import SafeView from "../shared/SafeView";
+import SafeView from "@/components/shared/SafeView";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const minorButtonStyle = "w-32 h-24 bg-gray-300 rounded-xl justify-center";

@@ -1,7 +1,7 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 
-import SafeView from "../shared/SafeView";
+import SafeView from "@/components/shared/SafeView";
 
 function chooseRandomColor() {
   const colors = ["red", "green", "blue", "yellow"];

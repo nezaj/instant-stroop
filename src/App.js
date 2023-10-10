@@ -6,7 +6,7 @@ import {
 } from "react-native-safe-area-context";
 import React, { useState } from "react";
 
-import SafeView from "./components/shared/SafeView";
+import SafeView from "@/components/shared/SafeView";
 import {
   GameOverMultiplayer,
   GameOverSingleplayer,
@@ -17,7 +17,7 @@ import {
   Settings,
   Singleplayer,
   WaitingRoom,
-} from "./components/scenes";
+} from "@/components/scenes";
 
 // Debug values
 // ------------------
