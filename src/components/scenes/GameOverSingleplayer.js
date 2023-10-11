@@ -41,7 +41,6 @@ function GameOverSingleplayer({ navigation, route, setHighScore }) {
       </View>
 
       {/* High Score */}
-
       {isHighScore && (
         <View className="flex-1 justify-center items-center mt-16 space-y-16">
           <Text className="font-bold text-2xl">New High Score!</Text>

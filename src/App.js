@@ -1,12 +1,13 @@
-import { init, useQuery, transact, tx } from "@instantdb/react-native";
+import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 import { View, Text, Linking, Button } from "react-native";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -24,6 +25,7 @@ import {
 // Consts
 // ------------------
 const DEFAULT_SCENE = "Singleplayer";
+const SINGLE_PLAYER_HIGHSCORE_KEY = "SINGLE_PLAYER_HIGHSCORE_KEY";
 
 // Instant init
 // ------------------
@@ -38,10 +40,14 @@ init({
 // ------------------
 const Stack = createStackNavigator();
 
-function AppNavigator({ data }) {
-  const [highScore, setHighScore] = useState(0);
+function AppNavigator({ data, initialHighScore }) {
+  const [highScore, setHighScore] = useState(initialHighScore);
   const updateHighScore = (newScore) => {
     if (newScore > highScore) {
+      AsyncStorage.setItem(
+        SINGLE_PLAYER_HIGHSCORE_KEY,
+        JSON.stringify(newScore)
+      );
       setHighScore(newScore);
     }
   };
@@ -65,7 +71,7 @@ function AppNavigator({ data }) {
         initialParams={{ data, highScore }}
       >
         {(props) => (
-          <GameOverSingleplayer setHighScore={setHighScore} {...props} />
+          <GameOverSingleplayer setHighScore={updateHighScore} {...props} />
         )}
       </Stack.Screen>
       <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
@@ -97,14 +103,37 @@ function AppNavigator({ data }) {
 // App
 // ------------------
 function App() {
+  const [highScore, setHighScore] = useState(null);
   const { isLoading, error, data } = useQuery({});
-  if (isLoading) return <Text>...</Text>;
+
+  useEffect(() => {
+    const fetchOrSetUserId = async () => {
+      const storageScore = await AsyncStorage.getItem(
+        SINGLE_PLAYER_HIGHSCORE_KEY
+      );
+      let numScore = parseInt(storageScore);
+
+      if (!numScore) {
+        numScore = 0;
+        await AsyncStorage.setItem(
+          SINGLE_PLAYER_HIGHSCORE_KEY,
+          JSON.stringify(numScore)
+        );
+      }
+
+      setHighScore(numScore);
+    };
+
+    fetchOrSetUserId();
+  }, []);
+
+  if (isLoading || highScore === null) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <AppNavigator data={data} />
+        <AppNavigator data={data} initialHighScore={highScore} />
       </NavigationContainer>
     </SafeAreaProvider>
   );
