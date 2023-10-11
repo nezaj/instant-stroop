@@ -107,7 +107,7 @@ function App() {
   const { isLoading, error, data } = useQuery({});
 
   useEffect(() => {
-    const fetchOrSetUserId = async () => {
+    const fetchOrSetHighScore = async () => {
       const storageScore = await AsyncStorage.getItem(
         SINGLE_PLAYER_HIGHSCORE_KEY
       );
@@ -124,7 +124,7 @@ function App() {
       setHighScore(numScore);
     };
 
-    fetchOrSetUserId();
+    fetchOrSetHighScore();
   }, []);
 
   if (isLoading || highScore === null) return <Text>...</Text>;
