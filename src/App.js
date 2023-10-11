@@ -25,7 +25,7 @@ import {
 // Consts
 // ------------------
 const DEFAULT_SCENE = "Singleplayer";
-const SINGLE_PLAYER_HIGHSCORE_KEY = "SINGLE_PLAYER_HIGHSCORE_KEY";
+const USER_ID_KEY = "USER_ID_KEY";
 
 // Instant init
 // ------------------
@@ -40,18 +40,7 @@ init({
 // ------------------
 const Stack = createStackNavigator();
 
-function AppNavigator({ data, initialHighScore }) {
-  const [highScore, setHighScore] = useState(initialHighScore);
-  const updateHighScore = (newScore) => {
-    if (newScore > highScore) {
-      AsyncStorage.setItem(
-        SINGLE_PLAYER_HIGHSCORE_KEY,
-        JSON.stringify(newScore)
-      );
-      setHighScore(newScore);
-    }
-  };
-
+function AppNavigator({ data }) {
   return (
     <Stack.Navigator
       initialRouteName={DEFAULT_SCENE}
@@ -62,18 +51,15 @@ function AppNavigator({ data, initialHighScore }) {
     >
       <Stack.Screen initialParams={{ data }} name="Main" component={Main} />
       <Stack.Screen
-        initialParams={{ data, highScore }}
+        initialParams={{ data }}
         name="Singleplayer"
         component={Singleplayer}
       />
       <Stack.Screen
         name="GameOverSingleplayer"
-        initialParams={{ data, highScore }}
-      >
-        {(props) => (
-          <GameOverSingleplayer setHighScore={updateHighScore} {...props} />
-        )}
-      </Stack.Screen>
+        initialParams={{ data }}
+        component={GameOverSingleplayer}
+      />
       <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
       <Stack.Screen name="Multiplayer" component={Multiplayer} />
       <Stack.Screen
@@ -103,37 +89,43 @@ function AppNavigator({ data, initialHighScore }) {
 // App
 // ------------------
 function App() {
-  const [highScore, setHighScore] = useState(null);
-  const { isLoading, error, data } = useQuery({});
-
+  const [userId, setUserId] = useState(null);
   useEffect(() => {
-    const fetchOrSetHighScore = async () => {
-      const storageScore = await AsyncStorage.getItem(
-        SINGLE_PLAYER_HIGHSCORE_KEY
-      );
-      let numScore = parseInt(storageScore);
+    const fetchOrSetUserId = async () => {
+      let storageUserId = await AsyncStorage.getItem(USER_ID_KEY);
 
-      if (!numScore) {
-        numScore = 0;
-        await AsyncStorage.setItem(
-          SINGLE_PLAYER_HIGHSCORE_KEY,
-          JSON.stringify(numScore)
+      if (!storageUserId) {
+        storageUserId = id();
+        await AsyncStorage.setItem(USER_ID_KEY, storageUserId);
+        transact(
+          tx.users[storageUserId].update({
+            highScore: 0,
+            userId: storageUserId,
+          })
         );
       }
 
-      setHighScore(numScore);
+      setUserId(storageUserId);
     };
 
-    fetchOrSetHighScore();
+    fetchOrSetUserId();
   }, []);
 
-  if (isLoading || highScore === null) return <Text>...</Text>;
+  if (userId === null) return <Text>...</Text>;
+  return <AppUser userId={userId} />;
+}
+
+function AppUser({ userId }) {
+  const { isLoading, error, data } = useQuery({
+    users: { $: { where: { id: userId } } },
+  });
+  if (isLoading) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <AppNavigator data={data} initialHighScore={highScore} />
+        <AppNavigator data={data} />
       </NavigationContainer>
     </SafeAreaProvider>
   );

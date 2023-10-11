@@ -25,12 +25,14 @@ const DEFAULT_SCORE = 0;
 // Screen
 // ------------------
 function Singleplayer({ route, navigation }) {
-  const { data, resetGame, highScore } = route.params;
   const [clock, setClock] = useState(DEFAULT_CLOCK);
   const [score, setScore] = useState(DEFAULT_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
+
+  const { data, resetGame } = route.params;
+  const { highScore } = data;
 
   // Reset Game
   useEffect(() => {
