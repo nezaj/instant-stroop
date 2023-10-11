@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
+import { transact, tx } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
 
@@ -13,12 +14,13 @@ const textStyle = "text-4xl text-center";
 
 // Screen
 // ------------------
-function GameOverSingleplayer({ navigation, route, setHighScore }) {
-  const { data, score, highScore } = route.params;
+function GameOverSingleplayer({ navigation, route }) {
+  const { user, score } = route.params;
+  const { userId, highScore } = user;
 
   useEffect(() => {
     if (score > highScore) {
-      setHighScore(score);
+      transact(tx.users[userId].update({ highScore: score }));
     }
   }, []);
   const isHighScore = score > highScore ? true : false;

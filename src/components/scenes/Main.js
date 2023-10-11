@@ -7,7 +7,7 @@ const minorButtonStyle = "w-32 h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
 
 function Main({ navigation, route }) {
-  const { data } = route.params;
+  const { user } = route.params;
   return (
     <SafeView className="flex-1 items-center">
       <View className="w-32 h-32 bg-gray-300 rounded-full mb-8" />

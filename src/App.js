@@ -1,4 +1,3 @@
-import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 import { View, Text, Linking, Button } from "react-native";
 import {
   SafeAreaProvider,
@@ -8,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -40,7 +40,7 @@ init({
 // ------------------
 const Stack = createStackNavigator();
 
-function AppNavigator({ data }) {
+function AppNavigator({ user }) {
   return (
     <Stack.Navigator
       initialRouteName={DEFAULT_SCENE}
@@ -49,36 +49,36 @@ function AppNavigator({ data }) {
         headerLeft: () => null,
       }}
     >
-      <Stack.Screen initialParams={{ data }} name="Main" component={Main} />
+      <Stack.Screen initialParams={{ user }} name="Main" component={Main} />
       <Stack.Screen
-        initialParams={{ data }}
+        initialParams={{ user }}
         name="Singleplayer"
         component={Singleplayer}
       />
       <Stack.Screen
         name="GameOverSingleplayer"
-        initialParams={{ data }}
+        initialParams={{ user }}
         component={GameOverSingleplayer}
       />
       <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
       <Stack.Screen name="Multiplayer" component={Multiplayer} />
       <Stack.Screen
         name="GameOverMultiplayer"
-        initialParams={{ data }}
+        initialParams={{ user }}
         component={GameOverMultiplayer}
       />
       <Stack.Screen
-        initialParams={{ data }}
+        initialParams={{ user }}
         name="JoinGame"
         component={JoinGame}
       />
       <Stack.Screen
-        initialParams={{ data }}
+        initialParams={{ user }}
         name="HowToPlay"
         component={HowToPlay}
       />
       <Stack.Screen
-        initialParams={{ data }}
+        initialParams={{ user }}
         name="Settings"
         component={Settings}
       />
@@ -121,11 +121,11 @@ function AppUser({ userId }) {
   });
   if (isLoading) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
-
+  const user = data.users[0];
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <AppNavigator data={data} />
+        <AppNavigator user={user} />
       </NavigationContainer>
     </SafeAreaProvider>
   );

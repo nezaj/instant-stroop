@@ -31,8 +31,8 @@ function Singleplayer({ route, navigation }) {
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
 
-  const { data, resetGame } = route.params;
-  const { highScore } = data;
+  const { user, resetGame } = route.params;
+  const { highScore } = user;
 
   // Reset Game
   useEffect(() => {
