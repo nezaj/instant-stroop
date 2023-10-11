@@ -4,6 +4,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -38,27 +39,35 @@ init({
 const Stack = createStackNavigator();
 
 function AppNavigator({ data }) {
+  const [highScore, setHighScore] = useState(0);
+  const updateHighScore = (newScore) => {
+    if (newScore > highScore) {
+      setHighScore(newScore);
+    }
+  };
+
   return (
     <Stack.Navigator
       initialRouteName={DEFAULT_SCENE}
-      screenOptions={
-        {
-          // headerBackTitleVisible: false,
-          // headerLeft: () => null,
-        }
-      }
+      screenOptions={{
+        headerBackTitleVisible: false,
+        headerLeft: () => null,
+      }}
     >
       <Stack.Screen initialParams={{ data }} name="Main" component={Main} />
       <Stack.Screen
-        initialParams={{ data }}
+        initialParams={{ data, highScore }}
         name="Singleplayer"
         component={Singleplayer}
       />
       <Stack.Screen
         name="GameOverSingleplayer"
-        initialParams={{ data }}
-        component={GameOverSingleplayer}
-      />
+        initialParams={{ data, highScore }}
+      >
+        {(props) => (
+          <GameOverSingleplayer setHighScore={setHighScore} {...props} />
+        )}
+      </Stack.Screen>
       <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
       <Stack.Screen name="Multiplayer" component={Multiplayer} />
       <Stack.Screen

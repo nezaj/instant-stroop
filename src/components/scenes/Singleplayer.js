@@ -25,7 +25,7 @@ const DEFAULT_SCORE = 0;
 // Screen
 // ------------------
 function Singleplayer({ route, navigation }) {
-  const { data, resetGame } = route.params;
+  const { data, resetGame, highScore } = route.params;
   const [clock, setClock] = useState(DEFAULT_CLOCK);
   const [score, setScore] = useState(DEFAULT_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
@@ -80,7 +80,7 @@ function Singleplayer({ route, navigation }) {
       <View className="flex-row justify-between items-center px-8">
         <View className="flex-col justify-between space-y-1">
           <Text className="font-bold text-xl">Time: {clock}</Text>
-          <Text className="font-bold text-xl">Best: 25</Text>
+          <Text className="font-bold text-xl">Best: {highScore}</Text>
         </View>
         <Text className="font-bold text-5xl">{score}</Text>
       </View>

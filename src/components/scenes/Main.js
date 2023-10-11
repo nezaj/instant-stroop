@@ -14,15 +14,13 @@ function Main({ navigation, route }) {
       <Text className="text-5xl font-bold mb-6">Stroopwafel</Text>
 
       <View className="flex-1 justify-center space-y-4">
-        <TouchableOpacity className={`${mainButtonStyle}`}>
-          <Text
-            className={`${textStyle}`}
-            onPress={() =>
-              navigation.navigate("Singleplayer", { resetGame: true })
-            }
-          >
-            Start
-          </Text>
+        <TouchableOpacity
+          className={`${mainButtonStyle}`}
+          onPress={() =>
+            navigation.navigate("Singleplayer", { resetGame: true })
+          }
+        >
+          <Text className={`${textStyle}`}>Start</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className={`${mainButtonStyle}`}>

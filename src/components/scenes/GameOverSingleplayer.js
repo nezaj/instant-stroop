@@ -13,15 +13,24 @@ const textStyle = "text-4xl text-center";
 
 // Screen
 // ------------------
-function GameOverSingleplayer({ navigation, route }) {
-  const { data, score } = route.params;
+function GameOverSingleplayer({ navigation, route, setHighScore }) {
+  const { data, score, highScore } = route.params;
+
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+    }
+  }, []);
+  const isHighScore = score > highScore ? true : false;
+  const bestScore = isHighScore ? score : highScore;
+
   return (
     <SafeView className="flex-1 mx-8">
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
         <View className="flex-col justify-between space-y-1">
           <Text className="font-bold text-xl">Time: 0</Text>
-          <Text className="font-bold text-xl">Best: 30</Text>
+          <Text className="font-bold text-xl">Best: {bestScore}</Text>
         </View>
         <Text className="font-bold text-5xl">{score}</Text>
       </View>
@@ -33,10 +42,12 @@ function GameOverSingleplayer({ navigation, route }) {
 
       {/* High Score */}
 
-      <View className="flex-1 justify-center items-center mt-16 space-y-16">
-        <Text className="font-bold text-2xl">New High Score!</Text>
-        <Text className="w-full font-bold text-5xl text-center">🏆</Text>
-      </View>
+      {isHighScore && (
+        <View className="flex-1 justify-center items-center mt-16 space-y-16">
+          <Text className="font-bold text-2xl">New High Score!</Text>
+          <Text className="w-full font-bold text-5xl text-center">🏆</Text>
+        </View>
+      )}
 
       {/* Buttons */}
       <View className="flex-1 justify-center space-y-4">
@@ -49,13 +60,11 @@ function GameOverSingleplayer({ navigation, route }) {
           <Text className={`${textStyle}`}>Play Again</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className={`${mainButtonStyle}`}>
-          <Text
-            className={`${textStyle}`}
-            onPress={() => navigation.navigate("Main")}
-          >
-            Menu
-          </Text>
+        <TouchableOpacity
+          className={`${mainButtonStyle}`}
+          onPress={() => navigation.navigate("Main")}
+        >
+          <Text className={`${textStyle}`}> Menu </Text>
         </TouchableOpacity>
       </View>
     </SafeView>
