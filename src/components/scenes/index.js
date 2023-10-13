@@ -1,7 +1,7 @@
 import GameOverMultiplayer from "./GameOverMultiplayer";
 import GameOverSingleplayer from "./GameOverSingleplayer";
 import HowToPlay from "./HowToPlay";
-import JoinGame from "./JoinGame";
+import JoinRoom from "./JoinRoom";
 import Main from "./Main";
 import Multiplayer from "./Multiplayer";
 import Settings from "./Settings";
@@ -12,7 +12,7 @@ export {
   GameOverMultiplayer,
   GameOverSingleplayer,
   HowToPlay,
-  JoinGame,
+  JoinRoom,
   Main,
   Multiplayer,
   Settings,

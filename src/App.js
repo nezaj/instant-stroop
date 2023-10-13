@@ -14,7 +14,7 @@ import {
   GameOverMultiplayer,
   GameOverSingleplayer,
   HowToPlay,
-  JoinGame,
+  JoinRoom,
   Main,
   Multiplayer,
   Settings,
@@ -70,7 +70,7 @@ function AppNavigator({ user }) {
       <Stack.Screen
         initialParams={{ user }}
         name="JoinGame"
-        component={JoinGame}
+        component={JoinRoom}
       />
       <Stack.Screen
         initialParams={{ user }}
