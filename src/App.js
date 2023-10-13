@@ -24,7 +24,7 @@ import {
 
 // Consts
 // ------------------
-const DEFAULT_SCENE = "Settings";
+const DEFAULT_SCENE = "WaitingRoom";
 const USER_ID_KEY = "USER_ID_KEY";
 
 // Instant init
@@ -60,7 +60,11 @@ function AppNavigator({ user }) {
         initialParams={{ user }}
         component={GameOverSingleplayer}
       />
-      <Stack.Screen name="WaitingRoom" component={WaitingRoom} />
+      <Stack.Screen
+        name="WaitingRoom"
+        component={WaitingRoom}
+        initialParams={{ user }}
+      />
       <Stack.Screen name="Multiplayer" component={Multiplayer} />
       <Stack.Screen
         name="GameOverMultiplayer"
