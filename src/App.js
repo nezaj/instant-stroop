@@ -24,7 +24,7 @@ import {
 
 // Consts
 // ------------------
-const DEFAULT_SCENE = "Singleplayer";
+const DEFAULT_SCENE = "Settings";
 const USER_ID_KEY = "USER_ID_KEY";
 
 // Instant init
