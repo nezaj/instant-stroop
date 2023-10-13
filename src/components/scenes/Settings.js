@@ -58,7 +58,7 @@ function Settings({ route }) {
         <Text className="text-xl my-4 text-center">Enter name</Text>
         <TextInput
           className="border h-20 p-2 text-4xl text-center"
-          onChangeText={(val) => val.length <= 18 && setHandle(val)}
+          onChangeText={setHandle}
           value={handle}
         />
       </View>

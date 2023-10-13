@@ -5,9 +5,9 @@ const adjectives = [
   "sad",
   "angry",
   "funny",
-  "serious",
-  "colorful",
-  "boring",
+  "grumpy",
+  "silly",
+  "stoic",
   "fast",
   "slow",
   "loud",
@@ -21,9 +21,9 @@ const nouns = [
   "lion",
   "tiger",
   "bear",
-  "elephant",
-  "giraffe",
   "whale",
+  "goose",
+  "fox",
 ].map(capitalize);
 
 function getRandomElement(array) {
@@ -31,7 +31,7 @@ function getRandomElement(array) {
 }
 
 export default function generateRandomString() {
-  const randomNumber = Math.floor(Math.random() * 10000) + 1;
+  const randomNumber = Math.floor(Math.random() * 1000) + 1;
 
   const randomAdjective = getRandomElement(adjectives);
   const randomNoun = getRandomElement(nouns);
