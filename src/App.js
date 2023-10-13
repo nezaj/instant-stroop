@@ -90,6 +90,8 @@ function AppNavigator({ user }) {
 // ------------------
 function App() {
   const [userId, setUserId] = useState(null);
+
+  // Create a new userId if didn't have one saved previously
   useEffect(() => {
     const fetchOrSetUserId = async () => {
       let storageUserId = await AsyncStorage.getItem(USER_ID_KEY);
@@ -97,12 +99,6 @@ function App() {
       if (!storageUserId) {
         storageUserId = id();
         await AsyncStorage.setItem(USER_ID_KEY, storageUserId);
-        transact(
-          tx.users[storageUserId].update({
-            highScore: 0,
-            userId: storageUserId,
-          })
-        );
       }
 
       setUserId(storageUserId);
@@ -119,7 +115,25 @@ function AppUser({ userId }) {
   const { isLoading, error, data } = useQuery({
     users: { $: { where: { id: userId } } },
   });
-  if (isLoading) return <Text>...</Text>;
+  const [userExists, setUserExists] = useState(false);
+
+  // Create user if they don't exist
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (data.users.length == 0) {
+      console.log(`[debug] Creating usering with id ${userId}`);
+      transact(
+        tx.users[userId].update({
+          highScore: 0,
+        })
+      );
+    }
+    setUserExists(true);
+    return () => null;
+  }, [isLoading, data]);
+  if (isLoading || !userExists) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
   const user = data.users[0];
   return (

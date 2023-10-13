@@ -16,7 +16,7 @@ const textStyle = "text-4xl text-center";
 // ------------------
 function GameOverSingleplayer({ navigation, route }) {
   const { user, score } = route.params;
-  const { userId, highScore } = user;
+  const { id: userId, highScore } = user;
 
   useEffect(() => {
     if (score > highScore) {
