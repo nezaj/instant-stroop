@@ -70,6 +70,7 @@ function AppUser({ userId }) {
   if (isLoading || !userExists) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
   const user = data.users[0];
+  console.log("Re-render!", user);
   return (
     <SafeAreaProvider>
       <NavigationContainer>

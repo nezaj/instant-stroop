@@ -5,6 +5,7 @@ import {
   TextInput,
   Animated,
 } from "react-native";
+import { transact, tx } from "@instantdb/react-native";
 import React, { useState, useRef, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
@@ -23,7 +24,7 @@ function isValidHandle(handle) {
   return handle.length > 2 && handle.length < 17 && isAlphanumeric(handle);
 }
 
-function SaveHandleButton({ handle }) {
+function SaveHandleButton({ userId, handle, onPress }) {
   const isValid = isValidHandle(handle);
   const animatedValue = useRef(new Animated.Value(isValid ? 0 : 1)).current;
   const interpolatedBackgroundColor = animatedValue.interpolate({
@@ -43,15 +44,20 @@ function SaveHandleButton({ handle }) {
       disabled={!isValid}
       className={`${mainButtonStyle} my-4`}
       style={{ backgroundColor: interpolatedBackgroundColor }}
+      onPress={onPress}
     >
       <Text className={`${textStyle}`}>Save</Text>
     </TouchableOpacity>
   );
 }
 
-function Settings({ route }) {
-  const { user } = route.params;
-  const [handle, setHandle] = useState(randomHandle());
+function Settings({ route, navigation }) {
+  const { user, nextScreen, ...rest } = route.params;
+  const [handle, setHandle] = useState(user.handle || randomHandle());
+  const handleSave = () => {
+    transact(tx.users[user.id].update({ handle }));
+    navigation.navigate(nextScreen || "Main", { ...rest });
+  };
   return (
     <SafeView className="flex-1 mx-8">
       <View className="flex-1 justify-end">
@@ -63,7 +69,7 @@ function Settings({ route }) {
         />
       </View>
       <View className="flex-1 justify-end">
-        <SaveHandleButton handle={handle} />
+        <SaveHandleButton handle={handle} onPress={handleSave} />
       </View>
     </SafeView>
   );

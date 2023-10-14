@@ -1,6 +1,8 @@
 import { Text, TouchableOpacity, View } from "react-native";
+import { transact, tx, id } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
+import randomCode from "@/utils/randomCode";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const minorButtonStyle = "w-32 h-24 bg-gray-300 rounded-xl justify-center";
@@ -8,6 +10,7 @@ const textStyle = "text-4xl text-center";
 
 function Main({ navigation, route }) {
   const { user } = route.params;
+  const { handle } = user;
   return (
     <SafeView className="flex-1 items-center">
       <View className="w-32 h-32 bg-gray-300 rounded-full mb-8" />
@@ -23,7 +26,24 @@ function Main({ navigation, route }) {
           <Text className={`${textStyle}`}>Start</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className={`${mainButtonStyle}`}>
+        <TouchableOpacity
+          className={`${mainButtonStyle}`}
+          onPress={() => {
+            const roomId = id();
+            const roomCode = randomCode();
+            if (!!handle) {
+              transact(
+                tx.rooms[roomId].update({ code: roomCode, hostId: user.id })
+              );
+              navigation.navigate("WaitingRoom", { roomCode });
+            } else {
+              navigation.navigate("Settings", {
+                nextScreen: "WaitingRoom",
+                roomCode,
+              });
+            }
+          }}
+        >
           <Text className={`${textStyle}`}>Create Game</Text>
         </TouchableOpacity>
 
@@ -36,8 +56,13 @@ function Main({ navigation, route }) {
             <Text className={`${textStyle}`}>Rules</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className={`${minorButtonStyle}`}>
-            <Text className={`${textStyle}`}>Name</Text>
+          <TouchableOpacity
+            className={`${minorButtonStyle}`}
+            onPress={() => {
+              navigation.navigate("Settings", { nextScreen: "Main" });
+            }}
+          >
+            <Text className={`${textStyle}`}>Profile</Text>
           </TouchableOpacity>
         </View>
       </View>
