@@ -24,7 +24,7 @@ function isValidHandle(handle) {
   return handle.length > 2 && handle.length < 17 && isAlphanumeric(handle);
 }
 
-function SaveHandleButton({ userId, handle, onPress }) {
+function SaveHandleButton({ handle, onPress }) {
   const isValid = isValidHandle(handle);
   const animatedValue = useRef(new Animated.Value(isValid ? 0 : 1)).current;
   const interpolatedBackgroundColor = animatedValue.interpolate({

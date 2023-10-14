@@ -44,7 +44,7 @@ export default function Navigator({ user }) {
       />
       <Stack.Screen
         initialParams={{ user }}
-        name="JoinGame"
+        name="JoinRoom"
         component={JoinRoom}
       />
       <Stack.Screen

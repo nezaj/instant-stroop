@@ -10,6 +10,7 @@ const textStyle = "text-4xl text-center";
 
 function Main({ navigation, route }) {
   const { user } = route.params;
+  const { id: userId } = user;
   const { handle } = user;
   return (
     <SafeView className="flex-1 items-center">
@@ -33,7 +34,9 @@ function Main({ navigation, route }) {
             const roomCode = randomCode();
             if (!!handle) {
               transact(
-                tx.rooms[roomId].update({ code: roomCode, hostId: user.id })
+                tx.rooms[roomId]
+                  .update({ code: roomCode, hostId: userId })
+                  .link({ users: userId })
               );
               navigation.navigate("WaitingRoom", { roomCode });
             } else {
@@ -47,7 +50,16 @@ function Main({ navigation, route }) {
           <Text className={`${textStyle}`}>Create Game</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className={`${mainButtonStyle}`}>
+        <TouchableOpacity
+          className={`${mainButtonStyle}`}
+          onPress={() => {
+            if (!!handle) {
+              navigation.navigate("JoinRoom");
+            } else {
+              navigation.navigate("Settings", { nextScreen: "JoinRoom" });
+            }
+          }}
+        >
           <Text className={`${textStyle}`}>Join Game</Text>
         </TouchableOpacity>
 
