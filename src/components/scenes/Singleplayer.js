@@ -54,7 +54,7 @@ function Singleplayer({ route, navigation }) {
         }
         return prevClock - 1;
       });
-    }, 1000);
+    }, 675);
 
     return () => clearInterval(timer);
   }, []);
@@ -69,6 +69,7 @@ function Singleplayer({ route, navigation }) {
   const onPress = (sqColor) => {
     if (sqColor == label) {
       setScore((prevScore) => prevScore + 1);
+      setClock((prevClock) => prevClock + 1);
       setLabel(chooseRandomColor());
       setColor(chooseRandomColor());
     } else {
@@ -81,7 +82,6 @@ function Singleplayer({ route, navigation }) {
       {/* Top Bar */}
       <View className="flex-row justify-between items-center px-8">
         <View className="flex-col justify-between space-y-1">
-          <Text className="font-bold text-xl">Time: {clock}</Text>
           <Text className="font-bold text-xl">Best: {highScore}</Text>
         </View>
         <Text className="font-bold text-5xl">{score}</Text>

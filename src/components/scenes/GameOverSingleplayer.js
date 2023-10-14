@@ -31,7 +31,6 @@ function GameOverSingleplayer({ navigation, route }) {
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
         <View className="flex-col justify-between space-y-1">
-          <Text className="font-bold text-xl">Time: 0</Text>
           <Text className="font-bold text-xl">Best: {bestScore}</Text>
         </View>
         <Text className="font-bold text-5xl">{score}</Text>
