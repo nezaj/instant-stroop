@@ -54,7 +54,7 @@ function Singleplayer({ route, navigation }) {
         }
         return prevClock - 1;
       });
-    }, 675);
+    }, 600);
 
     return () => clearInterval(timer);
   }, []);
