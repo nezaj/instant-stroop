@@ -1,30 +1,14 @@
 import { View, Text, Linking, Button } from "react-native";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 
-import SafeView from "@/components/shared/SafeView";
-import {
-  GameOverMultiplayer,
-  GameOverSingleplayer,
-  HowToPlay,
-  JoinRoom,
-  Main,
-  Multiplayer,
-  Settings,
-  Singleplayer,
-  WaitingRoom,
-} from "@/components/scenes";
+import AppNavigator from "@/Navigator";
 
 // Consts
 // ------------------
-const DEFAULT_SCENE = "WaitingRoom";
 const USER_ID_KEY = "USER_ID_KEY";
 
 // Instant init
@@ -35,60 +19,6 @@ init({
   appId: APP_ID,
   websocketURI: "wss://api.instantdb.com/runtime/session",
 });
-
-// Navigation
-// ------------------
-const Stack = createStackNavigator();
-
-function AppNavigator({ user }) {
-  return (
-    <Stack.Navigator
-      initialRouteName={DEFAULT_SCENE}
-      screenOptions={{
-        headerBackTitleVisible: false,
-        headerLeft: () => null,
-      }}
-    >
-      <Stack.Screen initialParams={{ user }} name="Main" component={Main} />
-      <Stack.Screen
-        initialParams={{ user }}
-        name="Singleplayer"
-        component={Singleplayer}
-      />
-      <Stack.Screen
-        name="GameOverSingleplayer"
-        initialParams={{ user }}
-        component={GameOverSingleplayer}
-      />
-      <Stack.Screen
-        name="WaitingRoom"
-        component={WaitingRoom}
-        initialParams={{ user }}
-      />
-      <Stack.Screen name="Multiplayer" component={Multiplayer} />
-      <Stack.Screen
-        name="GameOverMultiplayer"
-        initialParams={{ user }}
-        component={GameOverMultiplayer}
-      />
-      <Stack.Screen
-        initialParams={{ user }}
-        name="JoinGame"
-        component={JoinRoom}
-      />
-      <Stack.Screen
-        initialParams={{ user }}
-        name="HowToPlay"
-        component={HowToPlay}
-      />
-      <Stack.Screen
-        initialParams={{ user }}
-        name="Settings"
-        component={Settings}
-      />
-    </Stack.Navigator>
-  );
-}
 
 // App
 // ------------------
