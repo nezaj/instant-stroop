@@ -35,7 +35,12 @@ function Main({ navigation, route }) {
             if (!!handle) {
               transact(
                 tx.rooms[roomId]
-                  .update({ code: roomCode, hostId: userId })
+                  .update({
+                    code: roomCode,
+                    hostId: userId,
+                    readyPlayerIds: [],
+                    kickedPlayerIds: [],
+                  })
                   .link({ users: userId })
               );
               navigation.navigate("WaitingRoom", { roomCode, roomId });

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 import AppNavigator from "@/Navigator";
 
@@ -73,9 +74,11 @@ function AppUser({ userId }) {
   console.log("Re-render!", user);
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <AppNavigator user={user} />
-      </NavigationContainer>
+      <RootSiblingParent>
+        <NavigationContainer>
+          <AppNavigator user={user} />
+        </NavigationContainer>
+      </RootSiblingParent>
     </SafeAreaProvider>
   );
 }

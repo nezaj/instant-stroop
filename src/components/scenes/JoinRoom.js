@@ -56,7 +56,9 @@ function JoinRoom({ route, navigation }) {
   if (error) return <Text>Error: {error.message}</Text>;
 
   const { user } = route.params;
-  const room = data["rooms"].find((r) => r.code === roomCode);
+  const room = data["rooms"].find(
+    (r) => r.code === roomCode && !r.kickedPlayerIds.includes(user.id)
+  );
 
   const handleJoin = () => {
     if (room) {
