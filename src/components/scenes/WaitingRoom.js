@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { transact, tx, useQuery } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
+import * as Clipboard from "expo-clipboard";
 
 import SafeView from "@/components/shared/SafeView";
 import { stringModulus } from "@/utils/string";
@@ -31,6 +32,26 @@ const profileColors = [
   "bg-teal-400",
   "bg-purple-400",
 ];
+
+function InviteButton({ code }) {
+  console.log("code", code);
+  async function copy(code) {
+    await Clipboard.setStringAsync(
+      `Let's play Stroopwafel! My game code is: ${code}`
+    );
+    Toast.show("Game code copied! Send it over to your friends :)", {
+      duration: Toast.durations.LONG,
+    });
+  }
+  return (
+    <TouchableOpacity
+      className={`${mainButtonStyle}`}
+      onPress={() => copy(code)}
+    >
+      <Text className={`${textStyle}`}>Invite Friends</Text>
+    </TouchableOpacity>
+  );
+}
 
 function UserPill({ user, room, isReady, isAdmin }) {
   const { isYou, isHost, id: userId, handle } = user;
@@ -146,9 +167,7 @@ function WaitingRoom({ route, navigation }) {
         })}
       </View>
       <View className="flex-1 justify-end space-y-4">
-        <TouchableOpacity className={`${mainButtonStyle}`}>
-          <Text className={`${textStyle}`}>Invite Friends</Text>
-        </TouchableOpacity>
+        <InviteButton code={room.code} />
         {isAdmin ? (
           <TouchableOpacity
             disabled={room.readyPlayerIds.length === 0}
