@@ -61,7 +61,7 @@ function JoinRoom({ route, navigation }) {
   const handleJoin = () => {
     if (room) {
       transact(tx.rooms[room.id].link({ users: user.id }));
-      navigation.navigate("WaitingRoom", { roomCode: room.code });
+      navigation.navigate("WaitingRoom", { roomId: room.id });
     }
   };
 
@@ -71,6 +71,7 @@ function JoinRoom({ route, navigation }) {
         <Text className="text-xl my-4 text-center">Enter room code</Text>
         <TextInput
           autoCapitalize="characters"
+          autoCorrect={false}
           className="border h-20 p-2 text-4xl text-center"
           onChangeText={setRoomCode}
           value={roomCode}

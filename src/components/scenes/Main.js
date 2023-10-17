@@ -38,11 +38,12 @@ function Main({ navigation, route }) {
                   .update({ code: roomCode, hostId: userId })
                   .link({ users: userId })
               );
-              navigation.navigate("WaitingRoom", { roomCode });
+              navigation.navigate("WaitingRoom", { roomCode, roomId });
             } else {
               navigation.navigate("Settings", {
                 nextScreen: "WaitingRoom",
                 roomCode,
+                roomId,
               });
             }
           }}

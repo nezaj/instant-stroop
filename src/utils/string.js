@@ -9,3 +9,11 @@ export function capitalize(str) {
 export function isAlphanumeric(str) {
   return /^[a-z0-9]+$/.test(str.toLowerCase());
 }
+
+export function stringModulus(str, modValue) {
+  const hash = Array.from(str).reduce(
+    (hash, char) => ((hash << 5) - hash + char.charCodeAt(0)) | 0,
+    0
+  );
+  return Math.abs(hash) % modValue;
+}

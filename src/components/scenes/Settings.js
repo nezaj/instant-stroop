@@ -63,6 +63,7 @@ function Settings({ route, navigation }) {
       <View className="flex-1 justify-end">
         <Text className="text-xl my-4 text-center">Enter name</Text>
         <TextInput
+          autoCorrect={false}
           className="border h-20 p-2 text-4xl text-center"
           onChangeText={setHandle}
           value={handle}
