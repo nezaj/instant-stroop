@@ -2,7 +2,7 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
-import { avatarColor } from "@/utils/profile";
+import UserScore from "@/components/shared/UserScore";
 
 function chooseRandomColor() {
   const colors = ["red", "green", "blue", "yellow"];
@@ -20,22 +20,6 @@ const colorMap = {
 };
 
 const DEFAULT_SCORE = 0;
-const SMALL = "SMALL";
-const LARGE = "LARGE";
-
-// Screen
-// ------------------
-function UserScore({ handle, score }) {
-  const avatarStyle = avatarColor(handle);
-  const shift = Math.round((score / 13) * 100, 0) * 0.85;
-  console.log("shift", shift);
-  return (
-    <View
-      className={`${avatarStyle} absolute  w-12 h-12 rounded-full`}
-      style={{ left: `${shift}%` }}
-    />
-  );
-}
 
 function Multiplayer({ route, navigation }) {
   const [score, setScore] = useState(DEFAULT_SCORE);
@@ -43,7 +27,7 @@ function Multiplayer({ route, navigation }) {
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
 
-  const { user, resetGame } = route.params;
+  const { user } = route.params;
 
   const onPress = (sqColor) => {
     if (sqColor == label) {
