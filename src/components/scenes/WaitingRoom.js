@@ -4,7 +4,7 @@ import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
 import SafeView from "@/components/shared/SafeView";
-import { stringModulus } from "@/utils/string";
+import { avatarColor } from "@/utils/profile";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
@@ -58,8 +58,7 @@ function UserPill({ user, room, isReady, isAdmin }) {
   const { id: roomId, readyPlayerIds, kickedPlayerIds } = room;
 
   // Avatar
-  const bgColorIdx = stringModulus(handle, profileColors.length);
-  const bgColor = profileColors[bgColorIdx];
+  const avatarStyle = avatarColor(handle);
 
   // Title
   let title = [];
@@ -76,7 +75,7 @@ function UserPill({ user, room, isReady, isAdmin }) {
 
   return (
     <View className="flex-row rounded-xl border border-black items-center my-2 py-4">
-      <View className={`mx-4 w-12 h-12 ${bgColor} rounded-full`} />
+      <View className={`mx-4 w-12 h-12 ${avatarStyle} rounded-full`} />
       <View className="flex-1 flex-col space-y-1">
         <Text className="text-lg">{handle}</Text>
         <Text className="text-md">{title}</Text>
@@ -130,6 +129,7 @@ function WaitingRoom({ route, navigation }) {
     navigation.navigate("Main");
     return <Text>...</Text>;
   }
+
   const users = room.users
     .map((u) => {
       return {
@@ -147,13 +147,6 @@ function WaitingRoom({ route, navigation }) {
     <SafeView className="flex-1 justify-center mx-8">
       <View className="flex-1 justify-start -mt-2">
         {users.map((u) => {
-          let title = [];
-          if (u.isHost) {
-            title.push("Host");
-          }
-          if (u.isYou) {
-            title.push("You");
-          }
           const isReady = room.readyPlayerIds.includes(u.id);
           return (
             <UserPill

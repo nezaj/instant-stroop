@@ -12,7 +12,7 @@ import {
   WaitingRoom,
 } from "@/components/scenes";
 
-const DEFAULT_SCENE = "Main";
+const DEFAULT_SCENE = "Multiplayer";
 
 const Stack = createStackNavigator();
 
@@ -36,7 +36,11 @@ export default function Navigator({ user }) {
         options={({ route }) => ({ title: route.params.roomCode })}
         component={WaitingRoom}
       />
-      <Stack.Screen name="Multiplayer" component={Multiplayer} />
+      <Stack.Screen
+        name="Multiplayer"
+        initialParams={{ user }}
+        component={Multiplayer}
+      />
       <Stack.Screen
         name="GameOverMultiplayer"
         initialParams={{ user }}
