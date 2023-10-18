@@ -22,17 +22,6 @@ function userSort(a, b) {
   return a.handle.localeCompare(b.handle);
 }
 
-const profileColors = [
-  "bg-red-400",
-  "bg-green-400",
-  "bg-blue-400",
-  "bg-yellow-400",
-  "bg-orange-400",
-  "bg-lime-400",
-  "bg-teal-400",
-  "bg-purple-400",
-];
-
 function InviteButton({ code }) {
   console.log("code", code);
   async function copy(code) {
@@ -55,7 +44,7 @@ function InviteButton({ code }) {
 
 function UserPill({ user, room, isReady, isAdmin }) {
   const { isYou, isHost, id: userId, handle } = user;
-  const { id: roomId, readyPlayerIds, kickedPlayerIds } = room;
+  const { id: roomId, readyIds, kickedIds } = room;
 
   // Avatar
   const avatarStyle = avatarColor(handle);
@@ -87,8 +76,8 @@ function UserPill({ user, room, isReady, isAdmin }) {
             onPress={() => {
               transact([
                 tx.rooms[roomId].update({
-                  kickedPlayerIds: [...kickedPlayerIds, userId],
-                  readyPlayerIds: readyPlayerIds.filter((x) => x !== userId),
+                  kickedIds: [...kickedIds, userId],
+                  readyIds: readyIds.filter((x) => x !== userId),
                 }),
                 tx.rooms[roomId].unlink({ users: userId }),
               ]);
@@ -122,7 +111,7 @@ function WaitingRoom({ route, navigation }) {
     navigation.navigate("Main");
     return <Text>...</Text>;
   }
-  if (room.kickedPlayerIds.includes(user.id)) {
+  if (room.kickedIds.includes(user.id)) {
     Toast.show("You were kicked from the room 🤷‍♂️.", {
       duration: Toast.durations.SHORT,
     });
@@ -141,13 +130,13 @@ function WaitingRoom({ route, navigation }) {
     .sort(userSort);
 
   const isAdmin = user.id === room.hostId;
-  const isReady = room.readyPlayerIds.includes(user.id);
+  const isReady = room.readyIds.includes(user.id);
   const readyText = isReady ? "Not Ready" : "Ready!";
   return (
     <SafeView className="flex-1 justify-center mx-8">
       <View className="flex-1 justify-start -mt-2">
         {users.map((u) => {
-          const isReady = room.readyPlayerIds.includes(u.id);
+          const isReady = room.readyIds.includes(u.id);
           return (
             <UserPill
               key={u.id}
@@ -163,7 +152,7 @@ function WaitingRoom({ route, navigation }) {
         <InviteButton code={room.code} />
         {isAdmin ? (
           <TouchableOpacity
-            disabled={room.readyPlayerIds.length === 0}
+            disabled={room.readyIds.length === 0}
             className={`${mainButtonStyle}`}
           >
             <Text className={`${textStyle}`}>Start!</Text>
@@ -174,14 +163,12 @@ function WaitingRoom({ route, navigation }) {
               isReady
                 ? transact(
                     tx.rooms[roomId].update({
-                      readyPlayerIds: room.readyPlayerIds.filter(
-                        (x) => x !== user.id
-                      ),
+                      readyIds: room.readyIds.filter((x) => x !== user.id),
                     })
                   )
                 : transact(
                     tx.rooms[roomId].update({
-                      readyPlayerIds: [...room.readyPlayerIds, user.id],
+                      readyIds: [...room.readyIds, user.id],
                     })
                   );
             }}

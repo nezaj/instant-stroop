@@ -12,7 +12,7 @@ import {
   WaitingRoom,
 } from "@/components/scenes";
 
-const DEFAULT_SCENE = "GameOverMultiplayer";
+const DEFAULT_SCENE = "Main";
 
 const Stack = createStackNavigator();
 

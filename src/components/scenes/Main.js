@@ -38,8 +38,8 @@ function Main({ navigation, route }) {
                   .update({
                     code: roomCode,
                     hostId: userId,
-                    readyPlayerIds: [],
-                    kickedPlayerIds: [],
+                    readyIds: [],
+                    kickedIds: [],
                   })
                   .link({ users: userId })
               );
