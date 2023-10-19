@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { transact, tx, useQuery } from "@instantdb/react-native";
+import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
+import { MULTIPLAYER_SCORE_TO_WIN, chooseRandomColor } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
+import { now } from "@/utils/time";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
@@ -23,7 +26,6 @@ function userSort(a, b) {
 }
 
 function InviteButton({ code }) {
-  console.log("code", code);
   async function copy(code) {
     await Clipboard.setStringAsync(
       `Let's play Stroopwafel! My game code is: ${code}`
@@ -73,15 +75,16 @@ function UserPill({ user, room, isReady, isAdmin }) {
         {isAdmin && !isYou && (
           <TouchableOpacity
             className="bg-red-400 rounded-full"
-            onPress={() => {
-              transact([
-                tx.rooms[roomId].update({
-                  kickedIds: [...kickedIds, userId],
-                  readyIds: readyIds.filter((x) => x !== userId),
-                }),
-                tx.rooms[roomId].unlink({ users: userId }),
-              ]);
-            }}
+            onPress={() =>
+              transact(
+                tx.rooms[roomId]
+                  .update({
+                    kickedIds: [...kickedIds, userId],
+                    readyIds: readyIds.filter((x) => x !== userId),
+                  })
+                  .unlink({ users: userId })
+              )
+            }
           >
             <Text className="text-white py-2 px-4">Kick</Text>
           </TouchableOpacity>
@@ -174,17 +177,14 @@ function WaitingRoom({ route, navigation }) {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              isReady
-                ? transact(
-                    tx.rooms[roomId].update({
-                      readyIds: room.readyIds.filter((x) => x !== user.id),
-                    })
-                  )
-                : transact(
-                    tx.rooms[roomId].update({
-                      readyIds: [...room.readyIds, user.id],
-                    })
-                  );
+              const markReady = tx.rooms[roomId].update({
+                readyIds: [...room.readyIds, user.id],
+              });
+              const markNotReady = tx.rooms[roomId].update({
+                readyIds: room.readyIds.filter((x) => x !== user.id),
+              });
+              const toggleReady = isReady ? markNotReady : markReady;
+              transact(toggleReady);
             }}
             className={`${mainButtonStyle}`}
           >
