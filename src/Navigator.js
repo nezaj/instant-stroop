@@ -52,13 +52,13 @@ export default function Navigator({ user }) {
         component={GameOverMultiplayer}
       />
       <Stack.Screen
-        initialParams={{ user }}
         name="JoinRoom"
+        initialParams={{ user }}
         component={JoinRoom}
       />
       <Stack.Screen
-        initialParams={{ user }}
         name="HowToPlay"
+        initialParams={{ user }}
         component={HowToPlay}
       />
       <Stack.Screen

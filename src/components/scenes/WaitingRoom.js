@@ -4,10 +4,9 @@ import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
-import { generateGameColors } from "@/game";
+import { startMultiplayerGame } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
-import { now } from "@/utils/time";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
@@ -126,7 +125,8 @@ function WaitingRoom({ route, navigation }) {
     }
 
     if (room.currentGameId) {
-      navigation.navigate("Multiplayer");
+      navigation.navigate("Multiplayer", { gameId: room.currentGameId });
+      return;
     }
   }, [isLoading, room]);
 
@@ -146,35 +146,6 @@ function WaitingRoom({ route, navigation }) {
   const isAdmin = user.id === room.hostId;
   const isReady = room.readyIds.includes(user.id);
   const readyText = isReady ? "Not Ready" : "Ready!";
-
-  const startGame = () => {
-    const gameId = id();
-    console.log("room", room);
-    const players = users.filter(
-      (u) => u.id === room.hostId || room.readyIds.includes(u.id)
-    );
-    const colors = generateGameColors();
-    const scores = players.map((p) => ({ [p.id]: 0 }));
-    const createGame = tx.games[gameId].update({
-      status: "IN_PROGRESS",
-      spectatorIds: users
-        .filter((u) => u.id !== room.hostId && !room.readyIds.includes(u.id))
-        .map((u) => u.id),
-      colors,
-      scores,
-      created_at: now(),
-    });
-    const addUserGameLinks = users.map((u) =>
-      tx.games[gameId].link({ users: u.id })
-    );
-    const updateRoom = tx.rooms[roomId]
-      .update({
-        currentGameId: gameId,
-        readyIds: [],
-      })
-      .link({ games: gameId });
-    transact([createGame, ...addUserGameLinks, updateRoom]);
-  };
 
   return (
     <SafeView className="flex-1 justify-center mx-8">
@@ -196,7 +167,7 @@ function WaitingRoom({ route, navigation }) {
         <InviteButton code={room.code} />
         {isAdmin ? (
           <TouchableOpacity
-            onPress={() => startGame()}
+            onPress={() => startMultiplayerGame(room)}
             className={`${mainButtonStyle}`}
           >
             <Text className={`${textStyle}`}>Start!</Text>
