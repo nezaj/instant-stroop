@@ -58,7 +58,7 @@ function AppUser({ userId }) {
       return;
     }
     if (data.users.length == 0) {
-      console.log(`[debug] Creating usering with id ${userId}`);
+      console.log(`[debug] Creating user with id ${userId}`);
       transact(
         tx.users[userId].update({
           highScore: 0,
