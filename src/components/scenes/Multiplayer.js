@@ -1,14 +1,9 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 
+import { chooseRandomColor, colorStyleMap } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import UserScore from "@/components/shared/UserScore";
-
-function chooseRandomColor() {
-  const colors = ["red", "green", "blue", "yellow"];
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
-}
 
 // Consts
 // ------------------

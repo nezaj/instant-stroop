@@ -2,31 +2,18 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
-
-function chooseRandomColor() {
-  const colors = ["red", "green", "blue", "yellow"];
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
-}
+import { chooseRandomColor, colorStyleMap } from "@/game";
 
 // Consts
 // ------------------
-const DEFAULT_SCENE = "Singleplayer";
-const colorMap = {
-  "text-red-400": { color: "rgb(248 113 113)" },
-  "text-green-400": { color: "rgb(74 222 128)" },
-  "text-blue-400": { color: "rgb(96 165 250)" },
-  "text-yellow-400": { color: "rgb(250 204 21)" },
-};
-
-const DEFAULT_CLOCK = 5;
-const DEFAULT_SCORE = 0;
+const INITIAL_CLOCK = 5;
+const INITIAL_SCORE = 0;
 
 // Screen
 // ------------------
 function Singleplayer({ route, navigation }) {
-  const [clock, setClock] = useState(DEFAULT_CLOCK);
-  const [score, setScore] = useState(DEFAULT_SCORE);
+  const [clock, setClock] = useState(INITIAL_CLOCK);
+  const [score, setScore] = useState(INITIAL_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
@@ -37,8 +24,8 @@ function Singleplayer({ route, navigation }) {
   // Reset Game
   useEffect(() => {
     if (resetGame) {
-      setClock(DEFAULT_CLOCK);
-      setScore(DEFAULT_SCORE);
+      setClock(INITIAL_CLOCK);
+      setScore(INITIAL_SCORE);
       setLabel(chooseRandomColor());
       setColor(chooseRandomColor());
       route.params.resetGame = false;
@@ -90,7 +77,7 @@ function Singleplayer({ route, navigation }) {
       {/* Color Label */}
       <View className="flex-1 justify-center items-center">
         <Text
-          style={colorMap[textColor]}
+          style={colorStyleMap[textColor]}
           className="font-bold text-5xl uppercase"
         >
           {label}
