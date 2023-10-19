@@ -94,30 +94,44 @@ function UserPill({ user, room, isReady, isAdmin }) {
   );
 }
 
+function generateGameColors(n) {
+  return Array.from(n).map(() => ({
+    color: chooseRandomColor(),
+    label: chooseRandomColor(),
+  }));
+}
+
 function WaitingRoom({ route, navigation }) {
   const { user, roomId } = route.params;
   const { isLoading, error, data } = useQuery({
     rooms: { users: {}, $: { where: { id: roomId } } },
   });
-  if (isLoading) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
 
-  const room = data["rooms"][0];
-  console.log("Room!", room);
-  if (!room) {
-    Toast.show("Oh no! Looks like this room was abruptly deleted.", {
-      duration: Toast.durations.LONG,
-    });
-    navigation.navigate("Main");
-    return <Text>...</Text>;
-  }
-  if (room.kickedIds.includes(user.id)) {
-    Toast.show("You were kicked from the room 🤷‍♂️.", {
-      duration: Toast.durations.SHORT,
-    });
-    navigation.navigate("Main");
-    return <Text>...</Text>;
-  }
+  const room = data?.rooms?.[0];
+
+  // Handle navigating away from rooms
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (!room) {
+      Toast.show("Oh no! Looks like this room was abruptly deleted.", {
+        duration: Toast.durations.LONG,
+      });
+      navigation.navigate("Main");
+      return;
+    }
+    if (room.kickedIds.includes(user.id)) {
+      Toast.show("You were kicked from the room 🤷‍♂️.", {
+        duration: Toast.durations.SHORT,
+      });
+      navigation.navigate("Main");
+      return;
+    }
+  }, [isLoading, room]);
+
+  if (isLoading || !room) return <Text>...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
 
   const users = room.users
     .map((u) => {
