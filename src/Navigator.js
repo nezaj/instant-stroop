@@ -1,4 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
+import { LogBox } from "react-native";
 
 import {
   GameOverMultiplayer,
@@ -12,10 +13,14 @@ import {
   WaitingRoom,
 } from "@/components/scenes";
 
+// (XXX): React-Navigation sends noisy warnings. Let's disable it
+// See: https://github.com/react-navigation/react-navigation/issues/7839
+LogBox.ignoreLogs([
+  "Sending `onAnimatedValueUpdate` with no listeners registered.",
+]);
 const DEFAULT_SCENE = "Main";
 
 const Stack = createStackNavigator();
-
 export default function Navigator({ user }) {
   return (
     <Stack.Navigator initialRouteName={DEFAULT_SCENE}>
