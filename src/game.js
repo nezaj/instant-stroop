@@ -1,5 +1,7 @@
 /* Module containing game logic shared across app */
 
+const MULTIPLAYER_SCORE_TO_WIN = 13;
+
 export const colorStyleMap = {
   "text-red-400": { color: "rgb(248 113 113)" },
   "text-green-400": { color: "rgb(74 222 128)" },
@@ -13,4 +15,9 @@ export function chooseRandomColor() {
   return colors[randomIndex];
 }
 
-export const MULTIPLAYER_SCORE_TO_WIN = 13;
+export function generateGameColors(length = MULTIPLAYER_SCORE_TO_WIN) {
+  return Array.from({ length }).map((_) => ({
+    color: chooseRandomColor(),
+    label: chooseRandomColor(),
+  }));
+}

@@ -4,7 +4,7 @@ import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
-import { MULTIPLAYER_SCORE_TO_WIN, chooseRandomColor } from "@/game";
+import { generateGameColors } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
 import { now } from "@/utils/time";
@@ -97,13 +97,6 @@ function UserPill({ user, room, isReady, isAdmin }) {
   );
 }
 
-function generateGameColors(n) {
-  return Array.from(n).map(() => ({
-    color: chooseRandomColor(),
-    label: chooseRandomColor(),
-  }));
-}
-
 function WaitingRoom({ route, navigation }) {
   const { user, roomId } = route.params;
   const { isLoading, error, data } = useQuery({
@@ -131,6 +124,10 @@ function WaitingRoom({ route, navigation }) {
       navigation.navigate("Main");
       return;
     }
+
+    if (room.currentGameId) {
+      navigation.navigate("Multiplayer");
+    }
   }, [isLoading, room]);
 
   if (isLoading || !room) return <Text>...</Text>;
@@ -149,6 +146,36 @@ function WaitingRoom({ route, navigation }) {
   const isAdmin = user.id === room.hostId;
   const isReady = room.readyIds.includes(user.id);
   const readyText = isReady ? "Not Ready" : "Ready!";
+
+  const startGame = () => {
+    const gameId = id();
+    console.log("room", room);
+    const players = users.filter(
+      (u) => u.id === room.hostId || room.readyIds.includes(u.id)
+    );
+    const colors = generateGameColors();
+    const scores = players.map((p) => ({ [p.id]: 0 }));
+    const createGame = tx.games[gameId].update({
+      status: "IN_PROGRESS",
+      spectatorIds: users
+        .filter((u) => u.id !== room.hostId && !room.readyIds.includes(u.id))
+        .map((u) => u.id),
+      colors,
+      scores,
+      created_at: now(),
+    });
+    const addUserGameLinks = users.map((u) =>
+      tx.games[gameId].link({ users: u.id })
+    );
+    const updateRoom = tx.rooms[roomId]
+      .update({
+        currentGameId: gameId,
+        readyIds: [],
+      })
+      .link({ games: gameId });
+    transact([createGame, ...addUserGameLinks, updateRoom]);
+  };
+
   return (
     <SafeView className="flex-1 justify-center mx-8">
       <View className="flex-1 justify-start -mt-2">
@@ -169,7 +196,7 @@ function WaitingRoom({ route, navigation }) {
         <InviteButton code={room.code} />
         {isAdmin ? (
           <TouchableOpacity
-            disabled={room.readyIds.length === 0}
+            onPress={() => startGame()}
             className={`${mainButtonStyle}`}
           >
             <Text className={`${textStyle}`}>Start!</Text>
