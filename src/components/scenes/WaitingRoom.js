@@ -4,9 +4,10 @@ import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
-import { startMultiplayerGame } from "@/game";
+import { GAME_IN_PROGRESS } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
+import { now } from "@/utils/time";
 
 const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
@@ -23,6 +24,36 @@ function userSort(a, b) {
   // Sort the rest alphabetically by handle
   return a.handle.localeCompare(b.handle);
 }
+
+function startMultiplayerGame(room) {
+  const gameId = id();
+  const { users } = room;
+  const players = users.filter(
+    (u) => u.id === room.hostId || room.readyIds.includes(u.id)
+  );
+  const colors = generateGameColors();
+  const scores = players.map((p) => ({ [p.id]: 0 }));
+  const createGame = tx.games[gameId].update({
+    status: GAME_IN_PROGRESS,
+    spectatorIds: users
+      .filter((u) => u.id !== room.hostId && !room.readyIds.includes(u.id))
+      .map((u) => u.id),
+    colors,
+    scores,
+    created_at: now(),
+  });
+  const addUserGameLinks = users.map((u) =>
+    tx.games[gameId].link({ users: u.id })
+  );
+  const updateRoom = tx.rooms[room.id]
+    .update({
+      currentGameId: gameId,
+      readyIds: [],
+    })
+    .link({ games: gameId });
+  transact([createGame, ...addUserGameLinks, updateRoom]);
+};
+
 
 function InviteButton({ code }) {
   async function copy(code) {

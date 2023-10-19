@@ -32,7 +32,7 @@ function Main({ navigation, route }) {
           onPress={() => {
             const roomId = id();
             const roomCode = randomCode();
-            if (!!handle) {
+            if (handle.length) {
               transact(
                 tx.rooms[roomId]
                   .update({
