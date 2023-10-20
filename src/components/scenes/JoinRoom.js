@@ -63,7 +63,10 @@ function JoinRoom({ route, navigation }) {
   const handleJoin = () => {
     if (room) {
       transact(tx.rooms[room.id].link({ users: user.id }));
-      navigation.navigate("WaitingRoom", { roomId: room.id });
+      const nextScreen = room.currentGameId
+        ? ["Multiplayer", { gameId: room.currentGameId }]
+        : ["WaitingRoom", { roomId: room.id }];
+      navigation.navigate(...nextScreen);
     }
   };
 

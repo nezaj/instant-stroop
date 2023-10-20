@@ -2,7 +2,7 @@
 
 export const GAME_IN_PROGRESS = "GAME_IN_PROGRESS";
 export const GAME_COMPLETED = "GAME_COMPLETED";
-const MULTIPLAYER_SCORE_TO_WIN = 13;
+export const MULTIPLAYER_SCORE_TO_WIN = 3;
 
 export const colorStyleMap = {
   "text-red-400": { color: "rgb(248 113 113)" },
@@ -17,7 +17,7 @@ export function chooseRandomColor() {
   return colors[randomIndex];
 }
 
-export function generateGameColors(length = MULTIPLAYER_SCORE_TO_WIN) {
+export function generateGameColors(length = MULTIPLAYER_SCORE_TO_WIN + 1) {
   return Array.from({ length }).map((_) => ({
     color: chooseRandomColor(),
     label: chooseRandomColor(),
