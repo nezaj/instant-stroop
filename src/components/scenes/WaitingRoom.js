@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
@@ -12,6 +12,10 @@ import {
   primaryBackgroundColor as bgColor,
   RegularButton,
 } from "@/components/shared/styles";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 function userSort(a, b) {
   // Host comes first
@@ -155,8 +159,8 @@ function WaitingRoom({ route, navigation }) {
     }
   }, [isLoading, room]);
 
-  if (isLoading || !room) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading || !room) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
 
   const users = room.users
     .map((u) => {
@@ -175,20 +179,22 @@ function WaitingRoom({ route, navigation }) {
   return (
     <SafeView className={`flex-1 justify-center ${bgColor}`}>
       <View className="flex-1 w-full px-8">
-        <View className="flex-1 justify-start -mt-2">
-          {users.map((u) => {
-            const isReady = room.readyIds.includes(u.id);
-            return (
-              <UserPill
-                key={u.id}
-                user={u}
-                room={room}
-                isReady={isReady}
-                isAdmin={isAdmin}
-              />
-            );
-          })}
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View className="flex-1 justify-start -mt-2">
+            {users.map((u) => {
+              const isReady = room.readyIds.includes(u.id);
+              return (
+                <UserPill
+                  key={u.id}
+                  user={u}
+                  room={room}
+                  isReady={isReady}
+                  isAdmin={isAdmin}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
         <View className="flex-1 justify-end space-y-4">
           <InviteButton code={room.code} />
           {isAdmin ? (

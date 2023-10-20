@@ -7,6 +7,10 @@ import { useQuery, tx, transact } from "@instantdb/react-native";
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
 import { primaryBackgroundColor as bgColor } from "@/components/shared/styles";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 // Consts
 // ------------------
@@ -45,8 +49,8 @@ function Multiplayer({ route, navigation }) {
     }
   }, [isLoading, game]);
 
-  if (isLoading || !game) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading || !game) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
 
   const { playerIds, colors, users, points, rooms } = game;
 

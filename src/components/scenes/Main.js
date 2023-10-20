@@ -73,7 +73,13 @@ function Main({ navigation, route }) {
 
         <View className="flex-row my-2 space-x-4">
           <View>
-            <HalfButton>Rules</HalfButton>
+            <HalfButton
+              onPress={() => {
+                navigation.navigate("HowToPlay");
+              }}
+            >
+              Rules
+            </HalfButton>
           </View>
           <View>
             <HalfButton

@@ -16,6 +16,10 @@ import {
   regularButtonStyle,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 const textStyle = "text-4xl text-center";
 

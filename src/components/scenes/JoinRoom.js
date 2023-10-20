@@ -9,13 +9,15 @@ import { useQuery, transact, tx } from "@instantdb/react-native";
 import React, { useState, useRef, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
-import randomHandle from "@/utils/randomHandle";
-import { isAlphanumeric } from "@/utils/string";
 import {
   primaryBackgroundColor as bgColor,
   regularButtonStyle,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 const textStyle = "text-4xl text-center";
 
@@ -56,8 +58,8 @@ function JoinRoom({ route, navigation }) {
   const { isLoading, error, data } = useQuery({ rooms: {} });
   const [roomCode, setRoomCode] = useState("");
 
-  if (isLoading) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
 
   const { user } = route.params;
   const room = data["rooms"].find(

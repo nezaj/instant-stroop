@@ -9,6 +9,10 @@ import {
   primaryBackgroundColor as bgColor,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 // Consts
 // ------------------
@@ -39,8 +43,8 @@ function GameOverMultiPlayer({ navigation, route }) {
     }
   }, [isLoading, game]);
 
-  if (isLoading || !game) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading || !game) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
 
   const { points, rooms, playerIds, users } = game;
   const { id: roomId, code: roomCode } = rooms[0];

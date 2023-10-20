@@ -7,6 +7,10 @@ import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
 
 import AppNavigator from "@/Navigator";
+import {
+  LoadingPlaceholder,
+  ErrorPlaceholder,
+} from "@/components/shared/Placeholder";
 
 // Consts
 // ------------------
@@ -68,8 +72,8 @@ function AppUser({ userId }) {
     setUserExists(true);
     return () => null;
   }, [isLoading, data]);
-  if (isLoading || !userExists) return <Text>...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (isLoading || !userExists) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
   const user = data.users[0];
   console.log("Re-render!", user);
   return (
