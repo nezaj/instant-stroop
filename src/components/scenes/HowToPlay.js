@@ -7,8 +7,11 @@ import {
   primaryBackgroundColor as bgColor,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import Race from "@/components/shared/Race";
 
 import { chooseRandomColor, colorStyleMap } from "@/game";
+
+const GOAL = 13;
 
 const infoTextStyle =
   "text-xl my-4 text-slate-100 font-semibold text-left leading-8";
@@ -53,7 +56,7 @@ function Stroop({ label, color }) {
   );
 }
 
-function HowToPlay({ route }) {
+function HowToPlay({ route, navigation }) {
   const [score, setScore] = useState(0);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
@@ -67,6 +70,27 @@ function HowToPlay({ route }) {
       setScore((prevScore) => Math.max(prevScore - 2, 0));
     }
   };
+
+  const Grid = () => (
+    <View className="flex-1 flex-row flex-wrap justify-center my-4 mx-8">
+      <TouchableOpacity
+        onPress={() => onPress("red")}
+        className="w-32 h-32 bg-red-400 m-1"
+      ></TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("green")}
+        className="w-32 h-32 bg-green-400 m-1"
+      ></TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("blue")}
+        className="w-32 h-32 bg-blue-400 m-1"
+      ></TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("yellow")}
+        className="w-32 h-32 bg-yellow-400 m-1"
+      ></TouchableOpacity>
+    </View>
+  );
 
   const labelColor = `text-${label}-400`;
   return (
@@ -93,24 +117,7 @@ function HowToPlay({ route }) {
           >
             {label}
           </Text>
-          <View className="flex-1 flex-row flex-wrap justify-center my-4 mx-8">
-            <TouchableOpacity
-              onPress={() => onPress("red")}
-              className="w-32 h-32 bg-red-400 m-1"
-            ></TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onPress("green")}
-              className="w-32 h-32 bg-green-400 m-1"
-            ></TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onPress("blue")}
-              className="w-32 h-32 bg-blue-400 m-1"
-            ></TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onPress("yellow")}
-              className="w-32 h-32 bg-yellow-400 m-1"
-            ></TouchableOpacity>
-          </View>
+          <Grid />
           <Text className="font-bold text-5xl uppercase my-2 text-slate-100">
             {score}
           </Text>
@@ -123,11 +130,54 @@ function HowToPlay({ route }) {
           </Text>
           <MultiplayerHeader />
           <Text className={infoTextStyle}>
-            You can play against other people by either creating or joining a
-            room. When you play against others your in a race to see who can
-            cross the finish line first!
+            You can play Stroopwafel against other people! Either host a game by
+            creating a room or join a friend's game via code.
+          </Text>
+          <View className="w-full mx-8 mt-4">
+            <Race
+              goal={GOAL}
+              players={[
+                { id: 1, handle: "moop" },
+                { id: 2, handle: "boop" },
+              ]}
+              points={[
+                { userId: 1, val: Math.min(score, GOAL) },
+                { userId: 2, val: 6 },
+              ]}
+            />
+            <View className="flex-row justify-between mt-2 py-2">
+              <Text className="text-5xl ">🧇</Text>
+              <Text className="text-5xl">🏆</Text>
+            </View>
+            <Text
+              style={colorStyleMap[textColor]}
+              className="font-bold text-5xl uppercase my-4 text-center"
+            >
+              {label}
+            </Text>
+            <Grid />
+            {score >= GOAL && (
+              <View>
+                <Text className="text-yellow-400 text-center text-4xl font-bold my-2">
+                  You win!
+                </Text>
+                <Text
+                  className="py-2 px-4 text-xl text-center text-red-200"
+                  onPress={() => setScore(0)}
+                >
+                  Reset
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text className={infoTextStyle}>
+            When you play against others your in a race to see who can get
+            through all the words the fastest. First to reach the trophy wins!
           </Text>
         </View>
+        <RegularButton onPress={() => navigation.navigate("Main")}>
+          Alright, let's play!
+        </RegularButton>
       </ScrollView>
     </SafeView>
   );
