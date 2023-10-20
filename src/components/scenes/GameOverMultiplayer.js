@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { transact, tx } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
-import UserScore from "@/components/shared/UserScore";
+import PlayerPosition from "@/components/shared/PlayerPosition";
 
 // Consts
 // ------------------
@@ -23,20 +23,20 @@ function GameOverMultiPlayer({ navigation, route }) {
       {/* Top Bar */}
       <View className="mx-8 mt-4">
         <View className="flex-row items-start h-12">
-          <UserScore handle="first" score={0} />
-          <UserScore handle="second" score={1} />
-          <UserScore handle="second" score={2} />
-          <UserScore handle="second" score={3} />
-          <UserScore handle="second" score={4} />
-          <UserScore handle="second" score={5} />
-          <UserScore handle="second" score={6} />
-          <UserScore handle="second" score={7} />
-          <UserScore handle="second" score={8} />
-          <UserScore handle="second" score={9} />
-          <UserScore handle="second" score={10} />
-          <UserScore handle="second" score={11} />
-          <UserScore handle="second" score={12} />
-          <UserScore handle="third" score={13} />
+          <PlayerPosition handle="first" pos={0} />
+          <PlayerPosition handle="second" pos={1} />
+          <PlayerPosition handle="second" pos={2} />
+          <PlayerPosition handle="second" pos={3} />
+          <PlayerPosition handle="second" pos={4} />
+          <PlayerPosition handle="second" pos={5} />
+          <PlayerPosition handle="second" pos={6} />
+          <PlayerPosition handle="second" pos={7} />
+          <PlayerPosition handle="second" pos={8} />
+          <PlayerPosition handle="second" pos={9} />
+          <PlayerPosition handle="second" pos={10} />
+          <PlayerPosition handle="second" pos={11} />
+          <PlayerPosition handle="second" pos={12} />
+          <PlayerPosition handle="third" pos={13} />
         </View>
         <View className="flex-row justify-between mt-2 py-2">
           <Text className="text-3xl ">🧇</Text>
@@ -59,12 +59,7 @@ function GameOverMultiPlayer({ navigation, route }) {
 
       {/* Buttons */}
       <View className="flex-1 justify-center space-y-4">
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
-          onPress={() =>
-            navigation.navigate("Singleplayer", { resetGame: true })
-          }
-        >
+        <TouchableOpacity className={`${mainButtonStyle}`}>
           <Text className={`${textStyle}`}>Play Again</Text>
         </TouchableOpacity>
 

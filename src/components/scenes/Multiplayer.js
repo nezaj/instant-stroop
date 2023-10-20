@@ -1,10 +1,11 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import Toast from "react-native-root-toast";
 
-import { GAME_COMPLETED, chooseRandomColor, colorStyleMap } from "@/game";
-import { useQuery } from "@instantdb/react-native";
+import { GAME_COMPLETED, MULTIPLAYER_SCORE_TO_WIN } from "@/game";
+import { useQuery, tx, transact } from "@instantdb/react-native";
 import SafeView from "@/components/shared/SafeView";
-import UserScore from "@/components/shared/UserScore";
+import PlayerPosition from "@/components/shared/PlayerPosition";
 
 // Consts
 // ------------------
@@ -15,17 +16,11 @@ const colorMap = {
   "text-yellow-400": { color: "rgb(250 204 21)" },
 };
 
-const DEFAULT_SCORE = 0;
-
 function Multiplayer({ route, navigation }) {
   const { user, gameId } = route.params;
-  console.log("gameId", gameId);
   const { isLoading, error, data } = useQuery({
-    games: { users: {}, rooms: {}, $: { where: { id: gameId } } },
+    games: { users: {}, rooms: {}, points: {}, $: { where: { id: gameId } } },
   });
-  const [score, setScore] = useState(DEFAULT_SCORE);
-  const [label, setLabel] = useState(chooseRandomColor());
-  const [color, setColor] = useState(chooseRandomColor());
 
   const game = data?.games?.[0];
   console.log("Game", game);
@@ -45,44 +40,54 @@ function Multiplayer({ route, navigation }) {
 
     if (game.status === GAME_COMPLETED) {
       navigation.navigate("GameOverMultiplayer", { gameId });
+      return;
     }
   }, [isLoading, game]);
 
   if (isLoading || !game) return <Text>...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
-  const { status, spectatorIds, colors, scores } = game;
+  const { playerIds, colors, users, points, rooms } = game;
+
+  const userPoints = points.find((p) => p.userId === user.id);
+  const isSpectator = !userPoints;
+  const pos = isSpectator ? 0 : userPoints.val;
+  const { color, label } = colors[pos];
 
   const textColor = `text-${color}-400`;
 
   const onPress = (sqColor) => {
-    if (sqColor == label) {
-      setScore((prevScore) => prevScore + 1);
-      setLabel(chooseRandomColor());
-      setColor(chooseRandomColor());
-    } else {
-      setScore((prevScore) => Math.max(prevScore - 2, 0));
+    // (XXX): No-op until we implement spectator mode!
+    if (isSpectator) {
+      return;
     }
+    const { id: pointsId, val } = userPoints;
+    const newVal = sqColor === label ? val + 1 : Math.max(val - 2, 0);
+    let txs = [];
+    txs.push(tx.points[pointsId].update({ val: newVal }));
+    if (newVal === MULTIPLAYER_SCORE_TO_WIN) {
+      const roomId = rooms[0].id;
+      const updateGame = tx.games[gameId].update({ status: GAME_COMPLETED });
+      const updateRoom = tx.rooms[roomId].update({ currentGameId: null });
+      txs.push(updateGame);
+      txs.push(updateRoom);
+    }
+    transact([...txs]);
   };
 
+  const players = users.filter((u) => playerIds.includes(u.id));
   return (
     <SafeView className="flex-1 px-8">
       <View className="mx-8 mt-4">
         <View className="flex-row items-start h-12">
-          <UserScore handle="first" score={0} />
-          <UserScore handle="second" score={1} />
-          <UserScore handle="second" score={2} />
-          <UserScore handle="second" score={3} />
-          <UserScore handle="second" score={4} />
-          <UserScore handle="second" score={5} />
-          <UserScore handle="second" score={6} />
-          <UserScore handle="second" score={7} />
-          <UserScore handle="second" score={8} />
-          <UserScore handle="second" score={9} />
-          <UserScore handle="second" score={10} />
-          <UserScore handle="second" score={11} />
-          <UserScore handle="second" score={12} />
-          <UserScore handle="third" score={13} />
+          {players.map((p) => {
+            const playerPoints = points.find(
+              (point) => point.userId === p.id
+            ).val;
+            return (
+              <PlayerPosition key={p.id} handle={p.handle} pos={playerPoints} />
+            );
+          })}
         </View>
         <View className="flex-row justify-between mt-2 py-2">
           <Text className="text-3xl ">🧇</Text>
