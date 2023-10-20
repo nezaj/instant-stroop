@@ -4,15 +4,15 @@ import { useQuery, transact, tx } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
+import {
+  RegularButton,
+  primaryBackgroundColor as bgColor,
+  infoTextColor as textColor,
+} from "@/components/shared/styles";
 
 // Consts
 // ------------------
 const rankIcons = ["🏆", "🐇", "🐢"];
-
-// Styles
-// ------------------
-const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
-const textStyle = "text-4xl text-center";
 
 // Screen
 // ------------------
@@ -54,25 +54,27 @@ function GameOverMultiPlayer({ navigation, route }) {
   const top3 = rankedPoints.map((p, i) => [i, userMap[p.userId]]).slice(0, 3);
 
   return (
-    <SafeView className="flex-1 mx-8">
+    <SafeView className={`flex-1 px-8 ${bgColor}`}>
       {/* Top Bar */}
       <View className="mx-8 mt-4">
         <Race players={players} points={points} />
         <View className="flex-row justify-between mt-2 py-2">
-          <Text className="text-3xl ">🧇</Text>
-          <Text className="text-3xl">🏆</Text>
+          <Text className="text-5xl ">🧇</Text>
+          <Text className="text-5xl">🏆</Text>
         </View>
       </View>
 
       {/* Game Over */}
       <View className="items-center mt-16">
-        <Text className="font-bold text-5xl uppercase">Game Over!</Text>
+        <Text className={`font-bold  text-5xl uppercase ${textColor}`}>
+          Game Over!
+        </Text>
       </View>
 
       {/* Rankings */}
       <View className="flex-1 justify-center items-center space-y-2">
         {top3.map(([rank, { handle }]) => (
-          <Text key={rank} className="font-bold text-2xl">
+          <Text key={rank} className={`font-bold text-2xl ${textColor}`}>
             {rankIcons[rank]} {handle}
           </Text>
         ))}
@@ -80,24 +82,22 @@ function GameOverMultiPlayer({ navigation, route }) {
 
       {/* Buttons */}
       <View className="flex-1 justify-center space-y-4">
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
+        <RegularButton
           onPress={() =>
             navigation.navigate("WaitingRoom", { roomId, roomCode })
           }
         >
-          <Text className={`${textStyle}`}>Play Again</Text>
-        </TouchableOpacity>
+          Play Again
+        </RegularButton>
 
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
+        <RegularButton
           onPress={() => {
             // (TODO): Clean-up user from game and room when leaving
             navigation.navigate("Main");
           }}
         >
-          <Text className={`${textStyle}`}> Menu </Text>
-        </TouchableOpacity>
+          Menu
+        </RegularButton>
       </View>
     </SafeView>
   );

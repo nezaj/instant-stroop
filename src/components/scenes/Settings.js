@@ -11,13 +11,17 @@ import React, { useState, useRef, useEffect } from "react";
 import SafeView from "@/components/shared/SafeView";
 import randomHandle from "@/utils/randomHandle";
 import { isAlphanumeric } from "@/utils/string";
+import {
+  primaryBackgroundColor as bgColor,
+  regularButtonStyle,
+  infoTextColor as textColor,
+} from "@/components/shared/styles";
 
-const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
 const textStyle = "text-4xl text-center";
 
-const gray300 = "rgb(209, 213, 219)";
+const violet100 = "rgb(237 233 254);";
 const red300 = "rgb(252, 165, 165)";
-const validColor = gray300;
+const validColor = violet100;
 const invalidColor = red300;
 
 function isValidHandle(handle) {
@@ -42,8 +46,14 @@ function SaveHandleButton({ handle, onPress }) {
   return (
     <TouchableOpacity
       disabled={!isValid}
-      className={`${mainButtonStyle} my-4`}
-      style={{ backgroundColor: interpolatedBackgroundColor }}
+      className={`${regularButtonStyle} my-4`}
+      style={{
+        backgroundColor: interpolatedBackgroundColor,
+        shadowColor: "#6200EA",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        opacity: 0.8,
+      }}
       onPress={onPress}
     >
       <Text className={`${textStyle}`}>Save</Text>
@@ -59,18 +69,24 @@ function Settings({ route, navigation }) {
     navigation.navigate(nextScreen || "Main", { ...rest });
   };
   return (
-    <SafeView className="flex-1 mx-8">
-      <View className="flex-1 justify-end">
-        <Text className="text-xl my-4 text-center">Enter name</Text>
-        <TextInput
-          autoCorrect={false}
-          className="border h-20 p-2 text-4xl text-center"
-          onChangeText={setHandle}
-          value={handle}
-        />
-      </View>
-      <View className="flex-1 justify-end">
-        <SaveHandleButton handle={handle} onPress={handleSave} />
+    <SafeView className={`flex-1 items-center ${bgColor}`}>
+      <View className="flex-1 w-full px-8">
+        <View className="flex-1 justify-end">
+          <Text
+            className={`text-2xl font-semibold my-4 text-center ${textColor}`}
+          >
+            Enter name
+          </Text>
+          <TextInput
+            autoCorrect={false}
+            className={`h-20 p-2 text-4xl text-center border-4 border-amber-400 ${textColor} font-semibold`}
+            onChangeText={setHandle}
+            value={handle}
+          />
+        </View>
+        <View className="flex-1 justify-end">
+          <SaveHandleButton handle={handle} onPress={handleSave} />
+        </View>
       </View>
     </SafeView>
   );

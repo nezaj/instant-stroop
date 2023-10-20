@@ -2,33 +2,36 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { transact, tx, id } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
+import {
+  RegularButton,
+  HalfButton,
+  primaryBackgroundColor as bgColor,
+} from "@/components/shared/styles";
 import randomCode from "@/utils/randomCode";
-
-const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
-const minorButtonStyle = "w-32 h-24 bg-gray-300 rounded-xl justify-center";
-const textStyle = "text-4xl text-center";
 
 function Main({ navigation, route }) {
   const { user } = route.params;
   const { id: userId } = user;
   const { handle } = user;
   return (
-    <SafeView className="flex-1 items-center">
-      <View className="w-32 h-32 bg-gray-300 rounded-full mb-8" />
-      <Text className="text-5xl font-bold mb-6">Stroopwafel</Text>
+    <SafeView
+      className={`flex-1 flex-col items-center justify-around ${bgColor}`}
+    >
+      <View>
+        <Text className="text-8xl text-center my-8">🧇</Text>
+        <Text className="text-5xl font-bold text-yellow-400">Stroopwafel</Text>
+      </View>
 
-      <View className="flex-1 justify-center space-y-4">
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
+      <View className="justify-center">
+        <RegularButton
           onPress={() =>
             navigation.navigate("Singleplayer", { resetGame: true })
           }
         >
-          <Text className={`${textStyle}`}>Start</Text>
-        </TouchableOpacity>
+          Start
+        </RegularButton>
 
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
+        <RegularButton
           onPress={() => {
             const roomId = id();
             const roomCode = randomCode();
@@ -53,11 +56,10 @@ function Main({ navigation, route }) {
             }
           }}
         >
-          <Text className={`${textStyle}`}>Create Game</Text>
-        </TouchableOpacity>
+          Create Game
+        </RegularButton>
 
-        <TouchableOpacity
-          className={`${mainButtonStyle}`}
+        <RegularButton
           onPress={() => {
             if (!!handle) {
               navigation.navigate("JoinRoom");
@@ -66,22 +68,22 @@ function Main({ navigation, route }) {
             }
           }}
         >
-          <Text className={`${textStyle}`}>Join Game</Text>
-        </TouchableOpacity>
+          Join Game
+        </RegularButton>
 
-        <View className="flex-row space-x-4">
-          <TouchableOpacity className={`${minorButtonStyle}`}>
-            <Text className={`${textStyle}`}>Rules</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className={`${minorButtonStyle}`}
-            onPress={() => {
-              navigation.navigate("Settings", { nextScreen: "Main" });
-            }}
-          >
-            <Text className={`${textStyle}`}>Profile</Text>
-          </TouchableOpacity>
+        <View className="flex-row my-2 space-x-4">
+          <View>
+            <HalfButton>Rules</HalfButton>
+          </View>
+          <View>
+            <HalfButton
+              onPress={() => {
+                navigation.navigate("Settings", { nextScreen: "Main" });
+              }}
+            >
+              Profile
+            </HalfButton>
+          </View>
         </View>
       </View>
     </SafeView>

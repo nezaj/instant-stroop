@@ -6,6 +6,7 @@ import { GAME_COMPLETED, MULTIPLAYER_SCORE_TO_WIN } from "@/game";
 import { useQuery, tx, transact } from "@instantdb/react-native";
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
+import { primaryBackgroundColor as bgColor } from "@/components/shared/styles";
 
 // Consts
 // ------------------
@@ -77,12 +78,12 @@ function Multiplayer({ route, navigation }) {
 
   const players = users.filter((u) => playerIds.includes(u.id));
   return (
-    <SafeView className="flex-1 px-8">
+    <SafeView className={`flex-1 px-8 ${bgColor}`}>
       <View className="mx-8 mt-4">
         <Race players={players} points={points} />
         <View className="flex-row justify-between mt-2 py-2">
-          <Text className="text-3xl ">🧇</Text>
-          <Text className="text-3xl">🏆</Text>
+          <Text className="text-5xl ">🧇</Text>
+          <Text className="text-5xl">🏆</Text>
         </View>
       </View>
 

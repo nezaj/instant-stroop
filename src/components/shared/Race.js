@@ -4,7 +4,7 @@ import { MULTIPLAYER_SCORE_TO_WIN } from "@/game";
 
 function PlayerPosition({ handle, pos }) {
   const avatarStyle = avatarColor(handle);
-  const shift = Math.round((pos / MULTIPLAYER_SCORE_TO_WIN) * 100, 0) * 0.85;
+  const shift = Math.round((pos / MULTIPLAYER_SCORE_TO_WIN) * 100, 0) * 0.82;
   return (
     <View
       className={`${avatarStyle} absolute  w-12 h-12 rounded-full`}

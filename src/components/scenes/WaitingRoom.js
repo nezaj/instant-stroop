@@ -8,9 +8,10 @@ import { GAME_IN_PROGRESS, generateGameColors } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
 import { now } from "@/utils/time";
-
-const mainButtonStyle = "h-24 bg-gray-300 rounded-xl justify-center";
-const textStyle = "text-4xl text-center";
+import {
+  primaryBackgroundColor as bgColor,
+  RegularButton,
+} from "@/components/shared/styles";
 
 function userSort(a, b) {
   // Host comes first
@@ -65,12 +66,7 @@ function InviteButton({ code }) {
     });
   }
   return (
-    <TouchableOpacity
-      className={`${mainButtonStyle}`}
-      onPress={() => copy(code)}
-    >
-      <Text className={`${textStyle}`}>Invite Friends</Text>
-    </TouchableOpacity>
+    <RegularButton onPress={() => copy(code)}>Invite Friends</RegularButton>
   );
 }
 
@@ -92,14 +88,14 @@ function UserPill({ user, room, isReady, isAdmin }) {
   title = title.join(", ");
 
   // Ready Indicator
-  const readyDot = isHost || isReady ? "bg-green-400" : "bg-slate-400";
+  const readyDot = isHost || isReady ? "bg-green-400" : "bg-slate-700";
 
   return (
-    <View className="flex-row rounded-xl border border-black items-center my-2 py-4">
+    <View className="flex-row rounded-xl border-2 border-violet-300 items-center my-2 py-4">
       <View className={`mx-4 w-12 h-12 ${avatarStyle} rounded-full`} />
       <View className="flex-1 flex-col space-y-1">
-        <Text className="text-lg">{handle}</Text>
-        <Text className="text-md">{title}</Text>
+        <Text className="text-lg text-slate-100 font-bold">{handle}</Text>
+        <Text className="text-md text-slate-100 font-semibold">{title}</Text>
       </View>
       <View className="justify-end">
         {isAdmin && !isYou && (
@@ -116,13 +112,11 @@ function UserPill({ user, room, isReady, isAdmin }) {
               )
             }
           >
-            <Text className="text-white py-2 px-4">Kick</Text>
+            <Text className="py-2 px-4 text-slate-100 font-semibold">Kick</Text>
           </TouchableOpacity>
         )}
       </View>
-      <View
-        className={`mx-4 justify-end ${readyDot} border border-white rounded-full w-4 h-4`}
-      />
+      <View className={`mx-4 justify-end ${readyDot} rounded-full w-4 h-4`} />
     </View>
   );
 }
@@ -179,47 +173,45 @@ function WaitingRoom({ route, navigation }) {
   const readyText = isReady ? "Not Ready" : "Ready!";
 
   return (
-    <SafeView className="flex-1 justify-center mx-8">
-      <View className="flex-1 justify-start -mt-2">
-        {users.map((u) => {
-          const isReady = room.readyIds.includes(u.id);
-          return (
-            <UserPill
-              key={u.id}
-              user={u}
-              room={room}
-              isReady={isReady}
-              isAdmin={isAdmin}
-            />
-          );
-        })}
-      </View>
-      <View className="flex-1 justify-end space-y-4">
-        <InviteButton code={room.code} />
-        {isAdmin ? (
-          <TouchableOpacity
-            onPress={() => startMultiplayerGame(room)}
-            className={`${mainButtonStyle}`}
-          >
-            <Text className={`${textStyle}`}>Start!</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={() => {
-              const markReady = tx.rooms[roomId].update({
-                readyIds: [...room.readyIds, user.id],
-              });
-              const markNotReady = tx.rooms[roomId].update({
-                readyIds: room.readyIds.filter((x) => x !== user.id),
-              });
-              const toggleReady = isReady ? markNotReady : markReady;
-              transact(toggleReady);
-            }}
-            className={`${mainButtonStyle}`}
-          >
-            <Text className={`${textStyle}`}>{readyText}</Text>
-          </TouchableOpacity>
-        )}
+    <SafeView className={`flex-1 justify-center ${bgColor}`}>
+      <View className="flex-1 w-full px-8">
+        <View className="flex-1 justify-start -mt-2">
+          {users.map((u) => {
+            const isReady = room.readyIds.includes(u.id);
+            return (
+              <UserPill
+                key={u.id}
+                user={u}
+                room={room}
+                isReady={isReady}
+                isAdmin={isAdmin}
+              />
+            );
+          })}
+        </View>
+        <View className="flex-1 justify-end space-y-4">
+          <InviteButton code={room.code} />
+          {isAdmin ? (
+            <RegularButton onPress={() => startMultiplayerGame(room)}>
+              Start!
+            </RegularButton>
+          ) : (
+            <RegularButton
+              onPress={() => {
+                const markReady = tx.rooms[roomId].update({
+                  readyIds: [...room.readyIds, user.id],
+                });
+                const markNotReady = tx.rooms[roomId].update({
+                  readyIds: room.readyIds.filter((x) => x !== user.id),
+                });
+                const toggleReady = isReady ? markNotReady : markReady;
+                transact(toggleReady);
+              }}
+            >
+              {readyText}
+            </RegularButton>
+          )}
+        </View>
       </View>
     </SafeView>
   );

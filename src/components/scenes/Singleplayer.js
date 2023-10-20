@@ -2,6 +2,10 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 
 import SafeView from "@/components/shared/SafeView";
+import {
+  primaryBackgroundColor as bgColor,
+  infoTextColor,
+} from "@/components/shared/styles";
 import { chooseRandomColor, colorStyleMap } from "@/game";
 
 // Consts
@@ -65,13 +69,15 @@ function Singleplayer({ route, navigation }) {
   };
 
   return (
-    <SafeView className="flex-1">
+    <SafeView className={`flex-1 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center px-8">
         <View className="flex-col justify-between space-y-1">
-          <Text className="font-bold text-xl">Best: {highScore}</Text>
+          <Text className={`font-bold text-xl ${infoTextColor}`}>
+            Best: {highScore}
+          </Text>
         </View>
-        <Text className="font-bold text-5xl">{score}</Text>
+        <Text className={`font-bold text-5xl ${infoTextColor}`}>{score}</Text>
       </View>
 
       {/* Color Label */}
