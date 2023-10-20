@@ -5,7 +5,7 @@ import Toast from "react-native-root-toast";
 import { GAME_COMPLETED, MULTIPLAYER_SCORE_TO_WIN } from "@/game";
 import { useQuery, tx, transact } from "@instantdb/react-native";
 import SafeView from "@/components/shared/SafeView";
-import PlayerPosition from "@/components/shared/PlayerPosition";
+import Race from "@/components/shared/Race";
 
 // Consts
 // ------------------
@@ -79,16 +79,7 @@ function Multiplayer({ route, navigation }) {
   return (
     <SafeView className="flex-1 px-8">
       <View className="mx-8 mt-4">
-        <View className="flex-row items-start h-12">
-          {players.map((p) => {
-            const playerPoints = points.find(
-              (point) => point.userId === p.id
-            ).val;
-            return (
-              <PlayerPosition key={p.id} handle={p.handle} pos={playerPoints} />
-            );
-          })}
-        </View>
+        <Race players={players} points={points} />
         <View className="flex-row justify-between mt-2 py-2">
           <Text className="text-3xl ">🧇</Text>
           <Text className="text-3xl">🏆</Text>
