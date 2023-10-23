@@ -1,4 +1,4 @@
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const chars = "ABCDEFGHJKMNPQRSTUVWXYZ3456789";
 
 export default function generateRandomCode(length = 4) {
   return Array.from({ length })
