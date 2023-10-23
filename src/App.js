@@ -1,5 +1,4 @@
 import "react-native-gesture-handler";
-import { View, Text, Linking, Button } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
@@ -47,7 +46,7 @@ function App() {
     fetchOrSetUserId();
   }, []);
 
-  if (userId === null) return <Text>...</Text>;
+  if (userId === null) return <LoadingPlaceholder />;
   return <AppUser userId={userId} />;
 }
 

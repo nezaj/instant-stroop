@@ -98,8 +98,8 @@ function HowToPlay({ route, navigation }) {
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex-row flex-wrap space-x-2 items-center justify-center">
-          {stroops.map(([label, color]) => (
-            <Stroop label={label} color={color} />
+          {stroops.map(([label, color], i) => (
+            <Stroop key={i} label={label} color={color} />
           ))}
         </View>
         <Text className={infoTextStyle}>
