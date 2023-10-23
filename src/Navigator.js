@@ -26,6 +26,7 @@ export default function Navigator({ user }) {
     <Stack.Navigator
       initialRouteName={DEFAULT_SCENE}
       screenOptions={{
+        gestureEnabled: false,
         headerStyle: {
           backgroundColor: "#7c3aed",
         },
