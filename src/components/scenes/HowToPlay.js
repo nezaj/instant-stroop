@@ -75,19 +75,19 @@ function HowToPlay({ route, navigation }) {
     <View className="flex-1 flex-row flex-wrap justify-center my-4 mx-8">
       <TouchableOpacity
         onPress={() => onPress("red")}
-        className="w-32 h-32 bg-red-400 m-1"
+        className="w-28 h-28 bg-red-400 m-1"
       ></TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("green")}
-        className="w-32 h-32 bg-green-400 m-1"
+        className="w-28 h-28 bg-green-400 m-1"
       ></TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("blue")}
-        className="w-32 h-32 bg-blue-400 m-1"
+        className="w-28 h-28 bg-blue-400 m-1"
       ></TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("yellow")}
-        className="w-32 h-32 bg-yellow-400 m-1"
+        className="w-28 h-28 bg-yellow-400 m-1"
       ></TouchableOpacity>
     </View>
   );

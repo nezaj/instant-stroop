@@ -2,7 +2,7 @@
 
 export const GAME_IN_PROGRESS = "GAME_IN_PROGRESS";
 export const GAME_COMPLETED = "GAME_COMPLETED";
-export const MULTIPLAYER_SCORE_TO_WIN = 1;
+export const MULTIPLAYER_SCORE_TO_WIN = 13;
 
 export const colorStyleMap = {
   "text-red-400": { color: "rgb(248 113 113)" },
