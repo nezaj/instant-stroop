@@ -35,17 +35,17 @@ function Main({ navigation, route }) {
           onPress={() => {
             const roomId = id();
             const roomCode = randomCode();
+            transact(
+              tx.rooms[roomId]
+                .update({
+                  code: roomCode,
+                  hostId: userId,
+                  readyIds: [],
+                  kickedIds: [],
+                })
+                .link({ users: userId })
+            );
             if (handle?.length) {
-              transact(
-                tx.rooms[roomId]
-                  .update({
-                    code: roomCode,
-                    hostId: userId,
-                    readyIds: [],
-                    kickedIds: [],
-                  })
-                  .link({ users: userId })
-              );
               navigation.navigate("WaitingRoom", { roomCode, roomId });
             } else {
               navigation.navigate("Settings", {
