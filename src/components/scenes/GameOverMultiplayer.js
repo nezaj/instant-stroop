@@ -27,7 +27,6 @@ function GameOverMultiPlayer({ navigation, route }) {
   });
 
   const game = data?.games?.[0];
-  console.log("Game", game);
 
   // Handle navigating away from game
   useEffect(() => {

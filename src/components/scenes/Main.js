@@ -13,7 +13,6 @@ function Main({ navigation, route }) {
   const { user } = route.params;
   const { id: userId } = user;
   const { handle } = user;
-  console.log("MAIN", user);
   return (
     <SafeView
       className={`flex-1 flex-col items-center justify-around ${bgColor}`}
@@ -36,8 +35,7 @@ function Main({ navigation, route }) {
           onPress={() => {
             const roomId = id();
             const roomCode = randomCode();
-            console.log("handle", handle);
-            if (handle.length) {
+            if (handle?.length) {
               transact(
                 tx.rooms[roomId]
                   .update({

@@ -38,6 +38,7 @@ function MultiplayerHeader() {
     const textColor = stroops[i][1];
     return (
       <Text
+        key={i}
         style={colorStyleMap[textColor]}
         className="font-bold text-5xl uppercase my-2"
       >
