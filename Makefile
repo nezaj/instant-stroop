@@ -18,5 +18,5 @@ prod:
 	eas build -p ios
 
 submit:
-	@echo "Making production build..."
+	@echo "Submitting latest production build to app store..."
 	eas submit -p ios --latest
