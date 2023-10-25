@@ -14,9 +14,7 @@ function Main({ navigation, route }) {
   const { id: userId } = user;
   const { handle } = user;
   return (
-    <SafeView
-      className={`flex-1 flex-col items-center justify-around ${bgColor}`}
-    >
+    <SafeView className={`flex-1 items-center justify-around ${bgColor}`}>
       <View className="flex-1 justify-center space-y-2">
         <Text className="text-8xl text-center">🧇</Text>
         <Text className="justify-end text-5xl font-bold text-yellow-400">

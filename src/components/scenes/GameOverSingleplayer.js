@@ -30,7 +30,7 @@ function GameOverSingleplayer({ navigation, route }) {
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
-        <View className="flex-col justify-between space-y-1">
+        <View className="justify-between space-y-1">
           <Text className={`font-bold text-xl ${textColor}`}>
             Best: {bestScore}
           </Text>

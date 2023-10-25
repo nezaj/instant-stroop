@@ -97,7 +97,7 @@ function UserPill({ user, room, isReady, isAdmin }) {
   return (
     <View className="flex-row rounded-xl border-2 border-violet-300 items-center my-2 py-4">
       <View className={`mx-4 w-12 h-12 ${avatarStyle} rounded-full`} />
-      <View className="flex-1 flex-col space-y-1">
+      <View className="flex-1 space-y-1">
         <Text className="text-lg text-slate-100 font-bold">{handle}</Text>
         <Text className="text-md text-slate-100 font-semibold">{title}</Text>
       </View>
