@@ -17,12 +17,14 @@ function Main({ navigation, route }) {
     <SafeView
       className={`flex-1 flex-col items-center justify-around ${bgColor}`}
     >
-      <View>
-        <Text className="text-8xl text-center my-8">🧇</Text>
-        <Text className="text-5xl font-bold text-yellow-400">Stroopwafel</Text>
+      <View className="flex-1 justify-center space-y-2">
+        <Text className="text-8xl text-center">🧇</Text>
+        <Text className="justify-end text-5xl font-bold text-yellow-400">
+          Stroopwafel
+        </Text>
       </View>
 
-      <View className="justify-center">
+      <View className="flex-2 justify-end my-4">
         <RegularButton
           onPress={() =>
             navigation.navigate("Singleplayer", { resetGame: true })

@@ -85,10 +85,6 @@ function Multiplayer({ route, navigation }) {
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       <View className="mx-8 mt-4">
         <Race players={players} points={points} />
-        <View className="flex-row justify-between mt-2 py-2">
-          <Text className="text-5xl ">🧇</Text>
-          <Text className="text-5xl">🏆</Text>
-        </View>
       </View>
 
       {/* Color Label */}

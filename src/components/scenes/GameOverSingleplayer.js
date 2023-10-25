@@ -56,7 +56,7 @@ function GameOverSingleplayer({ navigation, route }) {
       )}
 
       {/* Buttons */}
-      <View className="flex-1 justify-end space-y-4">
+      <View className="flex-1 justify-end space-y-4 my-4">
         <RegularButton
           onPress={() =>
             navigation.navigate("Singleplayer", { resetGame: true })

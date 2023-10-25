@@ -61,10 +61,6 @@ function GameOverMultiPlayer({ navigation, route }) {
       {/* Top Bar */}
       <View className="mx-8 mt-4">
         <Race players={players} points={points} />
-        <View className="flex-row justify-between mt-2 py-2">
-          <Text className="text-5xl ">🧇</Text>
-          <Text className="text-5xl">🏆</Text>
-        </View>
       </View>
 
       {/* Game Over */}
@@ -84,7 +80,7 @@ function GameOverMultiPlayer({ navigation, route }) {
       </View>
 
       {/* Buttons */}
-      <View className="flex-1 justify-center space-y-4">
+      <View className="justify-center space-y-4 my-4">
         <RegularButton
           onPress={() =>
             navigation.navigate("WaitingRoom", { roomId, roomCode })

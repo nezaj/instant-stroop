@@ -40,7 +40,7 @@ function MultiplayerHeader() {
       <Text
         key={i}
         style={colorStyleMap[textColor]}
-        className="font-bold text-5xl uppercase my-2"
+        className="font-bold text-4xl uppercase my-2"
       >
         {c}
       </Text>
@@ -146,10 +146,6 @@ function HowToPlay({ route, navigation }) {
                 { userId: 2, val: 6 },
               ]}
             />
-            <View className="flex-row justify-between mt-2 py-2">
-              <Text className="text-5xl ">🧇</Text>
-              <Text className="text-5xl">🏆</Text>
-            </View>
             <Text
               style={colorStyleMap[textColor]}
               className="font-bold text-5xl uppercase my-4 text-center"
@@ -176,9 +172,11 @@ function HowToPlay({ route, navigation }) {
             through all the words the fastest. First to reach the trophy wins!
           </Text>
         </View>
-        <RegularButton onPress={() => navigation.navigate("Main")}>
-          Alright, let's play!
-        </RegularButton>
+        <View className="my-4">
+          <RegularButton onPress={() => navigation.navigate("Main")}>
+            Alright, let's play!
+          </RegularButton>
+        </View>
       </ScrollView>
     </SafeView>
   );
