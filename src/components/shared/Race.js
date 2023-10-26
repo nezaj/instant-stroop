@@ -3,7 +3,7 @@ import { View, Animated, Text } from "react-native";
 import { avatarColor } from "@/utils/profile";
 import { MULTIPLAYER_SCORE_TO_WIN } from "@/game";
 
-function PlayerPosition({ handle, pos, goal, width, isGameOver }) {
+function PlayerPosition({ handle, pos, goal, width }) {
   const avatarStyle = avatarColor(handle);
   const shift = Math.round((pos / goal) * width * 0.82);
   const translation = useRef(new Animated.Value(shift)).current;
