@@ -46,7 +46,7 @@ function GameOverMultiPlayer({ navigation, route }) {
   if (error) return <ErrorPlaceholder error={error} />;
 
   const { points, rooms, playerIds, users } = game;
-  const { id: roomId, code: roomCode } = rooms[0];
+  const { code } = rooms[0];
 
   const rankedPoints = points.sort((a, b) => b.val - a.val);
   const userMap = users.reduce((xs, u) => {
@@ -82,9 +82,7 @@ function GameOverMultiPlayer({ navigation, route }) {
       {/* Buttons */}
       <View className="justify-center space-y-4 my-4">
         <RegularButton
-          onPress={() =>
-            navigation.navigate("WaitingRoom", { roomId, roomCode })
-          }
+          onPress={() => navigation.navigate("WaitingRoom", { code })}
         >
           Play Again
         </RegularButton>

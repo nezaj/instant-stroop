@@ -26,7 +26,7 @@ const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;
 
-function JoinRoomButton({ isValidRoomCode, handle, onPress }) {
+function JoinRoomButton({ isValidRoomCode, onPress }) {
   const animatedValue = useRef(
     new Animated.Value(isValidRoomCode ? 0 : 1)
   ).current;
@@ -71,7 +71,7 @@ function JoinRoom({ route, navigation }) {
       transact(tx.rooms[room.id].link({ users: user.id }));
       const nextScreen = room.currentGameId
         ? ["Multiplayer", { gameId: room.currentGameId }]
-        : ["WaitingRoom", { roomId: room.id, roomCode: room.code }];
+        : ["WaitingRoom", { code: room.code }];
       navigation.navigate(...nextScreen);
     }
   };
@@ -94,11 +94,7 @@ function JoinRoom({ route, navigation }) {
           />
         </View>
         <View className="flex-1 justify-end">
-          <JoinRoomButton
-            isValidRoomCode={!!room}
-            handle={roomCode}
-            onPress={handleJoin}
-          />
+          <JoinRoomButton isValidRoomCode={!!room} onPress={handleJoin} />
         </View>
       </View>
     </SafeView>

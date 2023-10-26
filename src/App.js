@@ -1,12 +1,12 @@
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
 
-import AppNavigator from "@/Navigator";
+import randomHandle from "@/utils/randomHandle";
 import {
   LoadingPlaceholder,
   ErrorPlaceholder,
@@ -65,6 +65,7 @@ function AppUser({ userId }) {
       console.log(`[debug] Creating user with id ${userId}`);
       transact(
         tx.users[userId].update({
+          handle: randomHandle(),
           highScore: 0,
         })
       );

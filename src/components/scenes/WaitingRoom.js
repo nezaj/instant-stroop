@@ -126,9 +126,9 @@ function UserPill({ user, room, isReady, isAdmin }) {
 }
 
 function WaitingRoom({ route, navigation }) {
-  const { user, roomId } = route.params;
+  const { user, code } = route.params;
   const { isLoading, error, data } = useQuery({
-    rooms: { users: {}, $: { where: { id: roomId } } },
+    rooms: { users: {}, $: { where: { code: code } } },
   });
 
   const room = data?.rooms?.[0];
@@ -204,10 +204,10 @@ function WaitingRoom({ route, navigation }) {
           ) : (
             <RegularButton
               onPress={() => {
-                const markReady = tx.rooms[roomId].update({
+                const markReady = tx.rooms[room.roomId].update({
                   readyIds: [...room.readyIds, user.id],
                 });
-                const markNotReady = tx.rooms[roomId].update({
+                const markNotReady = tx.rooms[room.roomId].update({
                   readyIds: room.readyIds.filter((x) => x !== user.id),
                 });
                 const toggleReady = isReady ? markNotReady : markReady;

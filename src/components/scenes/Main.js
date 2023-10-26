@@ -34,59 +34,35 @@ function Main({ navigation, route }) {
         <RegularButton
           onPress={() => {
             const roomId = id();
-            const roomCode = randomCode();
+            const code = randomCode();
             transact(
               tx.rooms[roomId]
                 .update({
-                  code: roomCode,
+                  code: code,
                   hostId: userId,
                   readyIds: [],
                   kickedIds: [],
                 })
                 .link({ users: userId })
             );
-            if (handle?.length) {
-              navigation.navigate("WaitingRoom", { roomCode, roomId });
-            } else {
-              navigation.navigate("Settings", {
-                nextScreen: "WaitingRoom",
-                roomCode,
-                roomId,
-              });
-            }
+            navigation.navigate("WaitingRoom", { code: code });
           }}
         >
           Create Game
         </RegularButton>
 
-        <RegularButton
-          onPress={() => {
-            if (!!handle) {
-              navigation.navigate("JoinRoom");
-            } else {
-              navigation.navigate("Settings", { nextScreen: "JoinRoom" });
-            }
-          }}
-        >
+        <RegularButton onPress={() => navigation.navigate("JoinRoom")}>
           Join Game
         </RegularButton>
 
         <View className="flex-row my-2 space-x-4">
           <View>
-            <HalfButton
-              onPress={() => {
-                navigation.navigate("HowToPlay");
-              }}
-            >
+            <HalfButton onPress={() => navigation.navigate("HowToPlay")}>
               Rules
             </HalfButton>
           </View>
           <View>
-            <HalfButton
-              onPress={() => {
-                navigation.navigate("Settings", { nextScreen: "Main" });
-              }}
-            >
+            <HalfButton onPress={() => navigation.navigate("Settings")}>
               Profile
             </HalfButton>
           </View>

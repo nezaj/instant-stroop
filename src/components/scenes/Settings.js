@@ -62,11 +62,11 @@ function SaveHandleButton({ handle, onPress }) {
 }
 
 function Settings({ route, navigation }) {
-  const { user, nextScreen, ...rest } = route.params;
+  const { user } = route.params;
   const [handle, setHandle] = useState(user.handle || randomHandle());
   const handleSave = () => {
     transact(tx.users[user.id].update({ handle }));
-    navigation.navigate(nextScreen || "Main", { ...rest });
+    navigation.navigate("Main");
   };
   return (
     <SafeView className={`flex-1 items-center ${bgColor}`}>

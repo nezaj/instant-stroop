@@ -58,7 +58,7 @@ export default function Navigator({ user }) {
         name="WaitingRoom"
         initialParams={{ user }}
         options={({ route }) => ({
-          title: route.params.roomCode,
+          title: route.params.code,
           headerBackTitle: "Leave",
         })}
         component={WaitingRoom}
