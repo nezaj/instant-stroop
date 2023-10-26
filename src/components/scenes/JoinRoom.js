@@ -6,7 +6,7 @@ import {
   Animated,
 } from "react-native";
 import { useQuery, transact, tx } from "@instantdb/react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -18,6 +18,7 @@ import {
   LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
+import { UserContext } from "@/Context";
 
 const textStyle = "text-4xl text-center";
 
@@ -54,14 +55,14 @@ function JoinRoomButton({ isValidRoomCode, onPress }) {
   );
 }
 
-function JoinRoom({ route, navigation }) {
+function JoinRoom({ navigation }) {
+  const user = useContext(UserContext);
   const { isLoading, error, data } = useQuery({ rooms: {} });
   const [roomCode, setRoomCode] = useState("");
 
   if (isLoading) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
 
-  const { user } = route.params;
   const room = data["rooms"].find(
     (r) => r.code === roomCode && !r.kickedIds.includes(user.id)
   );

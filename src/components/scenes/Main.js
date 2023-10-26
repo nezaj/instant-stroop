@@ -1,6 +1,8 @@
+import { useContext } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { transact, tx, id } from "@instantdb/react-native";
 
+import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
 import {
   RegularButton,
@@ -9,8 +11,8 @@ import {
 } from "@/components/shared/styles";
 import randomCode from "@/utils/randomCode";
 
-function Main({ navigation, route }) {
-  const { user } = route.params;
+function Main({ navigation }) {
+  const user = useContext(UserContext);
   const { id: userId } = user;
   return (
     <SafeView className={`flex-1 items-center justify-around ${bgColor}`}>

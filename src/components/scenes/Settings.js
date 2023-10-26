@@ -6,7 +6,7 @@ import {
   Animated,
 } from "react-native";
 import { transact, tx } from "@instantdb/react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 
 import SafeView from "@/components/shared/SafeView";
 import randomHandle from "@/utils/randomHandle";
@@ -16,6 +16,7 @@ import {
   regularButtonStyle,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import { UserContext } from "@/Context";
 
 const textStyle = "text-4xl text-center";
 
@@ -61,8 +62,8 @@ function SaveHandleButton({ handle, onPress }) {
   );
 }
 
-function Settings({ route, navigation }) {
-  const { user } = route.params;
+function Settings({ navigation }) {
+  const user = useContext(UserContext);
   const [handle, setHandle] = useState(user.handle || randomHandle());
   const handleSave = () => {
     transact(tx.users[user.id].update({ handle }));

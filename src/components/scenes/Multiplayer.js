@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Toast from "react-native-root-toast";
 
 import { GAME_COMPLETED, MULTIPLAYER_SCORE_TO_WIN } from "@/game";
@@ -11,6 +11,7 @@ import {
   LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
+import { UserContext } from "@/Context";
 
 // Consts
 // ------------------
@@ -22,7 +23,8 @@ const colorMap = {
 };
 
 function Multiplayer({ route, navigation }) {
-  const { user, gameId } = route.params;
+  const user = useContext(UserContext);
+  const { gameId } = route.params;
   const { isLoading, error, data } = useQuery({
     games: { users: {}, rooms: {}, points: {}, $: { where: { id: gameId } } },
   });

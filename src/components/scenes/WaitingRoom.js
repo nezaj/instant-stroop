@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
@@ -16,6 +16,7 @@ import {
   LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
+import { UserContext } from "@/Context";
 
 function userSort(a, b) {
   // Host comes first
@@ -126,7 +127,8 @@ function UserPill({ user, room, isReady, isAdmin }) {
 }
 
 function WaitingRoom({ route, navigation }) {
-  const { user, code } = route.params;
+  const user = useContext(UserContext);
+  const { code } = route.params;
   const { isLoading, error, data } = useQuery({
     rooms: { users: {}, $: { where: { code: code } } },
   });

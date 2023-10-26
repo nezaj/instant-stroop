@@ -1,10 +1,11 @@
 import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 
+import { UserContext } from "@/Context";
 import AppNavigator, { DEEP_LINKS_CONFIG } from "@/Navigator";
 import randomHandle from "@/utils/randomHandle";
 import {
@@ -27,8 +28,6 @@ init({
 
 // App
 // ------------------
-const UserContext = createContext(null);
-
 function App() {
   const [userId, setUserId] = useState(null);
 
@@ -82,12 +81,14 @@ function AppUser({ userId }) {
   console.log("Re-render!", user);
   return (
     <SafeAreaProvider>
-      <NavigationContainer
-        linking={DEEP_LINKS_CONFIG}
-        fallback={<LoadingPlaceholder />}
-      >
-        <AppNavigator user={user} />
-      </NavigationContainer>
+      <UserContext.Provider value={user}>
+        <NavigationContainer
+          linking={DEEP_LINKS_CONFIG}
+          fallback={<LoadingPlaceholder />}
+        >
+          <AppNavigator user={user} />
+        </NavigationContainer>
+      </UserContext.Provider>
     </SafeAreaProvider>
   );
 }

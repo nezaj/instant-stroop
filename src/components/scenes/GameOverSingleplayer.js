@@ -1,7 +1,8 @@
-import { Text, View, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import { Text, View } from "react-native";
+import { useEffect, useContext } from "react";
 import { transact, tx } from "@instantdb/react-native";
 
+import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
 import {
   RegularButton,
@@ -15,7 +16,8 @@ import {
 // Screen
 // ------------------
 function GameOverSingleplayer({ navigation, route }) {
-  const { user, score } = route.params;
+  const user = useContext(UserContext);
+  const { score } = route.params;
   const { id: userId, highScore } = user;
 
   useEffect(() => {

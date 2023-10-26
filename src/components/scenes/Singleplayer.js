@@ -1,6 +1,7 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
+import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
 import {
   primaryBackgroundColor as bgColor,
@@ -15,15 +16,16 @@ const INITIAL_SCORE = 0;
 
 // Screen
 // ------------------
-function Singleplayer({ route, navigation }) {
+function Singleplayer({ navigation, route }) {
+  const user = useContext(UserContext);
   const [clock, setClock] = useState(INITIAL_CLOCK);
   const [score, setScore] = useState(INITIAL_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
   const textColor = `text-${color}-400`;
 
-  const { user, resetGame } = route.params;
   const { highScore } = user;
+  const { resetGame } = route.params;
 
   // Reset Game
   useEffect(() => {

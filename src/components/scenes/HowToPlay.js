@@ -57,7 +57,7 @@ function Stroop({ label, color }) {
   );
 }
 
-function HowToPlay({ route, navigation }) {
+function HowToPlay({ navigation }) {
   const [score, setScore] = useState(0);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
