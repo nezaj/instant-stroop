@@ -12,7 +12,6 @@ import randomCode from "@/utils/randomCode";
 function Main({ navigation, route }) {
   const { user } = route.params;
   const { id: userId } = user;
-  const { handle } = user;
   return (
     <SafeView className={`flex-1 items-center justify-around ${bgColor}`}>
       <View className="flex-1 justify-center space-y-2">

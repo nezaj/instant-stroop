@@ -2,41 +2,10 @@ import { useEffect, useState, useRef } from "react";
 import { View, Animated, Text } from "react-native";
 import { avatarColor } from "@/utils/profile";
 import { MULTIPLAYER_SCORE_TO_WIN } from "@/game";
-import { colorStyleMap } from "@/game";
-
-const colors = [
-  "text-green-400",
-  "text-blue-400",
-  "text-yellow-400",
-  "text-red-400",
-  "text-blue-400",
-  "text-red-400",
-  "text-yellow-400",
-  "text-blue-400",
-  "text-green-400",
-  "text-blue-400",
-  "text-red-400",
-];
-
-function EndLabel({ label }) {
-  const characters = label.split("").map((c, i) => {
-    const textColor = colors[i];
-    return (
-      <Text
-        key={i}
-        style={colorStyleMap[textColor]}
-        className="font-bold text-2xl uppercase"
-      >
-        {c}
-      </Text>
-    );
-  });
-  return <View className="flex-row my-2 justify-end">{characters}</View>;
-}
 
 function PlayerPosition({ handle, pos, goal, width, isGameOver }) {
   const avatarStyle = avatarColor(handle);
-  const shift = Math.round((pos / goal) * width * 0.84);
+  const shift = Math.round((pos / goal) * width * 0.82);
   const translation = useRef(new Animated.Value(shift)).current;
 
   useEffect(() => {
