@@ -5,6 +5,7 @@
     "privacy": "unlisted",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "stroopwafel",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#7C3AED",
@@ -16,6 +17,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
+      "associatedDomains": ["applinks:stroopwafel.app"],
       "bundleIdentifier": "com.jsventures.stroopwafel",
       "buildNumber": "3"
     },

@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
 
+import AppNavigator, { DEEP_LINKS_CONFIG } from "@/Navigator";
 import randomHandle from "@/utils/randomHandle";
 import {
   LoadingPlaceholder,
@@ -80,7 +81,10 @@ function AppUser({ userId }) {
   return (
     <SafeAreaProvider>
       <RootSiblingParent>
-        <NavigationContainer>
+        <NavigationContainer
+          linking={DEEP_LINKS_CONFIG}
+          fallback={<LoadingPlaceholder />}
+        >
           <AppNavigator user={user} />
         </NavigationContainer>
       </RootSiblingParent>

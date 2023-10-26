@@ -1,5 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { LogBox } from "react-native";
+import { createURL } from "expo-linking";
 
 import {
   GameOverMultiplayer,
@@ -19,6 +20,22 @@ LogBox.ignoreLogs([
   "Sending `onAnimatedValueUpdate` with no listeners registered.",
 ]);
 const DEFAULT_SCENE = "Main";
+export const DEEP_LINKS_CONFIG = {
+  prefixes: [createURL("/"), "https://stroopwafel.app"],
+  config: {
+    screens: {
+      Main: "main",
+      SinglePlayer: "play/:resetGame",
+      GameOverSinglePlayer: "play/over/:score",
+      WaitingRoom: "room/:code",
+      JoinRoom: "join/:code",
+      Mulitplayer: "game/:gameId",
+      GameOverMultiPlayer: "game/:gameId/over",
+      HowToPlay: "rules",
+      Settings: "settings",
+    },
+  },
+};
 
 const Stack = createStackNavigator();
 export default function Navigator({ user }) {
