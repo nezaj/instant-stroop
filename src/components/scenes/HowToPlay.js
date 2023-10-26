@@ -93,6 +93,7 @@ function HowToPlay({ route, navigation }) {
     </View>
   );
 
+  const colorKey = `text-${color}-400`;
   const labelColor = `text-${label}-400`;
   return (
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
@@ -113,7 +114,7 @@ function HowToPlay({ route, navigation }) {
 
         <View className="flex-1 justify-center items-center">
           <Text
-            style={colorStyleMap[textColor]}
+            style={colorStyleMap[colorKey]}
             className="font-bold text-5xl uppercase my-2"
           >
             {label}
@@ -147,7 +148,7 @@ function HowToPlay({ route, navigation }) {
               ]}
             />
             <Text
-              style={colorStyleMap[textColor]}
+              style={colorStyleMap[colorKey]}
               className="font-bold text-5xl uppercase my-4 text-center"
             >
               {label}
