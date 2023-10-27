@@ -26,7 +26,10 @@ export const DEEP_LINKS_CONFIG = {
     screens: {
       Main: "main",
       SinglePlayer: "play/:resetGame",
-      GameOverSinglePlayer: "play/over/:score",
+      GameOverSinglePlayer: {
+        path: "play/over/:score",
+        parse: { score: Number }
+      },
       WaitingRoom: "room/:code",
       JoinRoom: "join/:code",
       Mulitplayer: "game/:gameId",
