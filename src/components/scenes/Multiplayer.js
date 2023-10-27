@@ -2,7 +2,11 @@ import { Text, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect } from "react";
 import Toast from "react-native-root-toast";
 
-import { GAME_COMPLETED, MULTIPLAYER_SCORE_TO_WIN } from "@/game";
+import {
+  GAME_COMPLETED,
+  MULTIPLAYER_SCORE_TO_WIN,
+  colorStyleMap,
+} from "@/game";
 import { useQuery, tx, transact } from "@instantdb/react-native";
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
@@ -12,15 +16,6 @@ import {
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
-
-// Consts
-// ------------------
-const colorMap = {
-  "text-red-400": { color: "rgb(248 113 113)" },
-  "text-green-400": { color: "rgb(74 222 128)" },
-  "text-blue-400": { color: "rgb(96 165 250)" },
-  "text-yellow-400": { color: "rgb(250 204 21)" },
-};
 
 function Multiplayer({ route, navigation }) {
   const user = useContext(UserContext);
@@ -92,7 +87,7 @@ function Multiplayer({ route, navigation }) {
       {/* Color Label */}
       <View className="flex-1 justify-center items-center">
         <Text
-          style={colorMap[textColor]}
+          style={colorStyleMap[textColor]}
           className="font-bold text-5xl uppercase"
         >
           {label}

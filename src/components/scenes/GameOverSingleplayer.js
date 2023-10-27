@@ -10,11 +10,6 @@ import {
   infoTextColor as textColor,
 } from "@/components/shared/styles";
 
-// Consts
-// ------------------
-
-// Screen
-// ------------------
 function GameOverSingleplayer({ navigation, route }) {
   const user = useContext(UserContext);
   const { score } = route.params;

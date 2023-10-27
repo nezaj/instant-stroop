@@ -17,7 +17,7 @@ function PlayerPosition({ handle, pos, goal, width }) {
   }, [pos, width]);
 
   if (!width) {
-    <Text>...</Text>;
+    return <Text>...</Text>;
   }
 
   return (
