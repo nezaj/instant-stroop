@@ -63,7 +63,6 @@ function AppUser({ userId }) {
       return;
     }
     if (data.users.length == 0) {
-      console.log(`[debug] Creating user with id ${userId}`);
       transact(
         tx.users[userId].update({
           handle: randomHandle(),
@@ -78,7 +77,6 @@ function AppUser({ userId }) {
   if (error) return <ErrorPlaceholder error={error} />;
   const user = data.users[0];
 
-  console.log("Re-render!", user);
   return (
     <SafeAreaProvider>
       <UserContext.Provider value={user}>
