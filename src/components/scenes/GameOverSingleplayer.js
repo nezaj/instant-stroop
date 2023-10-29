@@ -37,7 +37,7 @@ function GameOverSingleplayer({ navigation, route }) {
 
       {/* Game Over */}
       <View className="items-center mt-16">
-        <Text className={`font-bold  text-5xl uppercase ${textColor}`}>
+        <Text className={`font-bold text-5xl uppercase ${textColor}`}>
           Game Over!
         </Text>
       </View>
