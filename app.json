@@ -14,10 +14,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#7C3AED"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
-      "associatedDomains": ["applinks:stroopwafel.app"],
+      "associatedDomains": [
+        "applinks:stroopwafel.app"
+      ],
       "bundleIdentifier": "com.jsventures.stroopwafel",
       "buildNumber": "3"
     },
@@ -33,7 +37,8 @@
     "extra": {
       "eas": {
         "projectId": "5e184d83-06f9-4a1c-80ad-466b1d1a240b"
-      }
+      },
+      "expoConfig": {}
     }
   }
 }

@@ -12,3 +12,6 @@ make dev
 ```
 
 You should now have a local server running Stroopwafel! Fire up the simulator or scan the QR code with your phone to test it out!
+
+## TODO:
+- Add notes for setting up eas (npm install --global eas-cli)
