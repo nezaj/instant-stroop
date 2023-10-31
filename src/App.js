@@ -3,7 +3,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { init, useQuery, transact, tx, id } from "@instantdb/react-native";
+import {
+  init,
+  useQuery,
+  transact,
+  tx,
+  id,
+  getLocalId,
+} from "@instantdb/react-native";
 
 import { UserContext } from "@/Context";
 import AppNavigator, { DEEP_LINKS_CONFIG } from "@/Navigator";
@@ -29,20 +36,15 @@ init({
 
 // App
 // ------------------
+
 function App() {
   const [userId, setUserId] = useState(null);
 
   // Create a new userId if didn't have one saved previously
   useEffect(() => {
     const fetchOrSetUserId = async () => {
-      let storageUserId = await AsyncStorage.getItem(USER_ID_KEY);
-
-      if (!storageUserId) {
-        storageUserId = id();
-        await AsyncStorage.setItem(USER_ID_KEY, storageUserId);
-      }
-
-      setUserId(storageUserId);
+      const storageId = await getLocalId("user");
+      setUserId(storageId);
     };
 
     fetchOrSetUserId();
@@ -52,7 +54,9 @@ function App() {
   return <AppUser userId={userId} />;
 }
 
+let renders = { app: 0 };
 function AppUser({ userId }) {
+  console.log("render", renders.app++);
   const { isLoading, error, data } = useQuery({
     users: { $: { where: { id: userId } } },
   });
