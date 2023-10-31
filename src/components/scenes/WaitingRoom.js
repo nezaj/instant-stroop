@@ -144,7 +144,14 @@ function WaitingRoom({ route, navigation }) {
         <HeaderBackButton
           tintColor={HEADER_TINT_COLOR}
           label="Leave"
-          onPress={() => leaveRoomTx(user.id, room, navigation)}
+          onPress={() => {
+            leaveRoomTx(user.id, room, navigation);
+            // Don't navigate away for admins since we will do this
+            // as part of room clean-up
+            if (!isAdmin) {
+              navigation.navigate("Main");
+            }
+          }}
         />
       ),
     });
@@ -159,6 +166,8 @@ function WaitingRoom({ route, navigation }) {
       setIsAdmin(true);
     }
     if (!room) {
+      // Admins deleted the room so we don't need to
+      // tell them the room was deleted
       if (!isAdmin) {
         Toast.show("Oh no! Looks like this room was deleted.", {
           duration: Toast.durations.LONG,
