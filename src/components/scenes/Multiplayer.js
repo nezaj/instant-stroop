@@ -58,7 +58,7 @@ function Multiplayer({ route, navigation }) {
   const textColor = `text-${color}-400`;
 
   const onPress = (sqColor) => {
-    // (XXX): No-op until we implement spectator mode!
+    // (TODO): Implement spectactor mode!
     if (isSpectator) {
       return;
     }

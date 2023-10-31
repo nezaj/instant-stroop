@@ -206,11 +206,12 @@ function WaitingRoom({ route, navigation }) {
           ) : (
             <RegularButton
               onPress={() => {
-                const markReady = tx.rooms[room.roomId].update({
-                  readyIds: [...room.readyIds, user.id],
+                const { id: roomId, readyIds } = room;
+                const markReady = tx.rooms[roomId].update({
+                  readyIds: [...readyIds, user.id],
                 });
-                const markNotReady = tx.rooms[room.roomId].update({
-                  readyIds: room.readyIds.filter((x) => x !== user.id),
+                const markNotReady = tx.rooms[roomId].update({
+                  readyIds: readyIds.filter((x) => x !== user.id),
                 });
                 const toggleReady = isReady ? markNotReady : markReady;
                 transact(toggleReady);
