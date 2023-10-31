@@ -1,15 +1,17 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { HeaderBackButton } from "@react-navigation/elements";
 import { transact, tx, useQuery, id } from "@instantdb/react-native";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
-import { GAME_IN_PROGRESS, generateGameColors } from "@/game";
+import { GAME_IN_PROGRESS, generateGameColors, leaveRoomTx } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
 import { now } from "@/utils/time";
 import {
   primaryBackgroundColor as bgColor,
+  HEADER_TINT_COLOR,
   RegularButton,
 } from "@/components/shared/styles";
 import {
@@ -132,18 +134,36 @@ function WaitingRoom({ route, navigation }) {
   const { isLoading, error, data } = useQuery({
     rooms: { users: {}, $: { where: { code: code } } },
   });
-
+  const [isAdmin, setIsAdmin] = useState(false);
   const room = data?.rooms?.[0];
+
+  // Set up leave button
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HeaderBackButton
+          tintColor={HEADER_TINT_COLOR}
+          label="Leave"
+          onPress={() => leaveRoomTx(user.id, room, navigation)}
+        />
+      ),
+    });
+  }, [navigation, room]);
 
   // Handle navigating away from rooms
   useEffect(() => {
     if (isLoading) {
       return;
     }
+    if (room?.hostId === user.id && !isAdmin) {
+      setIsAdmin(true);
+    }
     if (!room) {
-      Toast.show("Oh no! Looks like this room was abruptly deleted.", {
-        duration: Toast.durations.LONG,
-      });
+      if (!isAdmin) {
+        Toast.show("Oh no! Looks like this room was deleted.", {
+          duration: Toast.durations.LONG,
+        });
+      }
       navigation.navigate("Main");
       return;
     }
@@ -174,7 +194,6 @@ function WaitingRoom({ route, navigation }) {
     })
     .sort(userSort);
 
-  const isAdmin = user.id === room.hostId;
   const isReady = room.readyIds.includes(user.id);
   const readyText = isReady ? "Not Ready" : "Ready!";
 

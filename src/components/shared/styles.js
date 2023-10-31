@@ -4,6 +4,7 @@ export const primaryBackgroundColor = "bg-violet-600";
 export const primaryTextColor = "text-slate-800";
 export const infoTextColor = "text-yellow-400";
 export const primaryButtonBackgroundColor = "bg-violet-100";
+export const HEADER_TINT_COLOR = "#facc15";
 
 export const regularButtonStyle = `h-24 ${primaryButtonBackgroundColor} rounded-xl justify-center my-2`;
 const halfButtonStyle = `h-24 ${primaryButtonBackgroundColor} rounded-xl justify-center px-4`;

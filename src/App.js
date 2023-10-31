@@ -12,6 +12,7 @@ import {
   LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
+import { now } from "./utils/time";
 
 // Consts
 // ------------------
@@ -67,6 +68,7 @@ function AppUser({ userId }) {
         tx.users[userId].update({
           handle: randomHandle(),
           highScore: 0,
+          created_at: now(),
         })
       );
     }

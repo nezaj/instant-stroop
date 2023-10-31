@@ -10,6 +10,7 @@ import {
   primaryBackgroundColor as bgColor,
 } from "@/components/shared/styles";
 import randomCode from "@/utils/randomCode";
+import { now } from "@/utils/time";
 
 function Main({ navigation }) {
   const user = useContext(UserContext);
@@ -43,6 +44,7 @@ function Main({ navigation }) {
                   hostId: userId,
                   readyIds: [],
                   kickedIds: [],
+                  created_at: now(),
                 })
                 .link({ users: userId })
             );

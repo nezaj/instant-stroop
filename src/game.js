@@ -1,5 +1,8 @@
 /* Module containing game logic shared across app */
 
+import { transact, tx } from "@instantdb/react-native";
+import { now } from "./utils/time";
+
 export const GAME_IN_PROGRESS = "GAME_IN_PROGRESS";
 export const GAME_COMPLETED = "GAME_COMPLETED";
 export const MULTIPLAYER_SCORE_TO_WIN = 13;
@@ -22,4 +25,15 @@ export function generateGameColors(length = MULTIPLAYER_SCORE_TO_WIN + 1) {
     color: chooseRandomColor(),
     label: chooseRandomColor(),
   }));
+}
+
+export function leaveRoomTx(userId, room) {
+  const { id: roomId, hostId } = room;
+  const leaveRoom = tx.rooms[roomId].unlink({ users: userId });
+  const deleteRoom = tx.rooms[roomId].update({
+    code: null,
+    deleted_at: now(),
+  });
+  const action = hostId === userId ? deleteRoom : leaveRoom;
+  transact(action);
 }

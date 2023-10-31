@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useQuery, transact, tx } from "@instantdb/react-native";
 
 import SafeView from "@/components/shared/SafeView";
@@ -13,6 +13,9 @@ import {
   LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
+import { UserContext } from "@/Context";
+import { now } from "@/utils/time";
+import { leaveRoomTx } from "@/game";
 
 // Consts
 // ------------------
@@ -21,6 +24,7 @@ const rankIcons = ["🏆", "🐇", "🐢"];
 // Screen
 // ------------------
 function GameOverMultiPlayer({ navigation, route }) {
+  const user = useContext(UserContext);
   const { gameId } = route.params;
   const { isLoading, error, data } = useQuery({
     games: { users: {}, rooms: {}, points: {}, $: { where: { id: gameId } } },
@@ -46,7 +50,8 @@ function GameOverMultiPlayer({ navigation, route }) {
   if (error) return <ErrorPlaceholder error={error} />;
 
   const { points, rooms, playerIds, users } = game;
-  const { code } = rooms[0];
+  const room = rooms[0];
+  const { code, id: roomId, hostId } = room;
 
   const rankedPoints = points.sort((a, b) => b.val - a.val);
   const userMap = users.reduce((xs, u) => {
@@ -89,7 +94,7 @@ function GameOverMultiPlayer({ navigation, route }) {
 
         <RegularButton
           onPress={() => {
-            // (TODO): Clean-up user from game and room when leaving
+            leaveRoomTx(user.id, room);
             navigation.navigate("Main");
           }}
         >

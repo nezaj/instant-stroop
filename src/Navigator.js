@@ -1,3 +1,4 @@
+import { HeaderBackButton } from "@react-navigation/elements";
 import { createStackNavigator } from "@react-navigation/stack";
 import { LogBox } from "react-native";
 import { createURL } from "expo-linking";
@@ -13,6 +14,7 @@ import {
   Singleplayer,
   WaitingRoom,
 } from "@/components/scenes";
+import { HEADER_TINT_COLOR } from "./components/shared/styles";
 
 // (XXX): React-Navigation sends noisy warnings. Let's disable it
 // See: https://github.com/react-navigation/react-navigation/issues/7839
@@ -28,7 +30,7 @@ export const DEEP_LINKS_CONFIG = {
       SinglePlayer: "play/:resetGame",
       GameOverSinglePlayer: {
         path: "play/over/:score",
-        parse: { score: Number }
+        parse: { score: Number },
       },
       WaitingRoom: "room/:code",
       JoinRoom: "join/:code",
@@ -50,7 +52,7 @@ export default function Navigator({ user }) {
         headerStyle: {
           backgroundColor: "#7c3aed",
         },
-        headerTintColor: "#facc15",
+        headerTintColor: HEADER_TINT_COLOR,
         headerTitleStyle: {
           fontWeight: "bold",
         },
@@ -75,7 +77,10 @@ export default function Navigator({ user }) {
         name="WaitingRoom"
         options={({ route }) => ({
           title: route.params.code,
-          headerBackTitle: "Leave",
+          // Add a placeholder without onPress to avoid flicker
+          headerLeft: () => (
+            <HeaderBackButton tintColor={HEADER_TINT_COLOR} label="Leave" />
+          ),
         })}
         component={WaitingRoom}
       />
