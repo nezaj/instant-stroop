@@ -2,15 +2,14 @@ import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   init,
   useQuery,
   transact,
   tx,
-  id,
   getLocalId,
 } from "@instantdb/react-native";
+import { useRenderCounter } from "@/utils/perf";
 
 import { UserContext } from "@/Context";
 import AppNavigator, { DEEP_LINKS_CONFIG } from "@/Navigator";
@@ -54,9 +53,8 @@ function App() {
   return <AppUser userId={userId} />;
 }
 
-let renders = { app: 0 };
 function AppUser({ userId }) {
-  console.log("render", renders.app++);
+  useRenderCounter("AppUser");
   const { isLoading, error, data } = useQuery({
     users: { $: { where: { id: userId } } },
   });
