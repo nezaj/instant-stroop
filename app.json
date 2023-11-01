@@ -3,7 +3,7 @@
     "name": "Stroopwafel",
     "slug": "instant-stroop",
     "privacy": "unlisted",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "scheme": "stroopwafel",
     "icon": "./assets/icon.png",
@@ -23,7 +23,7 @@
         "applinks:stroopwafel.app"
       ],
       "bundleIdentifier": "com.jsventures.stroopwafel",
-      "buildNumber": "3"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {
