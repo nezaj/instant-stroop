@@ -66,7 +66,9 @@ function startMultiplayerGame(room) {
 function InviteButton({ code }) {
   async function copy(code) {
     await Clipboard.setStringAsync(
-      `Let's play Stroopwafel! My game code is: ${code}`
+      `Let's play Stroopwafel! You can join my room at
+
+https://stroopwafel.app/join/${code}`
     );
     Toast.show("Game code copied! Send it over to your friends :)", {
       duration: Toast.durations.LONG,
@@ -162,6 +164,9 @@ function WaitingRoom({ route, navigation }) {
     if (isLoading) {
       return;
     }
+    // We reset admin to false in the edge case of creating a room and
+    // then opening a join room deep link
+    setIsAdmin(false);
     if (room?.hostId === user.id && !isAdmin) {
       setIsAdmin(true);
     }

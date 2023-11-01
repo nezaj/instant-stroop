@@ -38,6 +38,7 @@ export const DEEP_LINKS_CONFIG = {
       GameOverMultiPlayer: "game/:gameId/over",
       HowToPlay: "rules",
       Settings: "settings",
+      Main: "*",
     },
   },
 };

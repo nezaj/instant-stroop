@@ -55,10 +55,10 @@ function JoinRoomButton({ isValidRoomCode, onPress }) {
   );
 }
 
-function JoinRoom({ navigation }) {
+function JoinRoom({ route, navigation }) {
   const user = useContext(UserContext);
   const { isLoading, error, data } = useQuery({ rooms: {} });
-  const [roomCode, setRoomCode] = useState("");
+  const [roomCode, setRoomCode] = useState(route.params?.code || "");
 
   if (isLoading) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
