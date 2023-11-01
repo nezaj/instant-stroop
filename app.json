@@ -23,7 +23,7 @@
         "applinks:stroopwafel.app"
       ],
       "bundleIdentifier": "com.jsventures.stroopwafel",
-      "buildNumber": "5"
+      "buildNumber": "6"
     },
     "android": {
       "adaptiveIcon": {
