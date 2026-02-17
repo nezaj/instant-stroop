@@ -21,7 +21,7 @@ function GameOverSingleplayer({ navigation, route }: Props) {
 
   useEffect(() => {
     if (score > highScore) {
-      db.transact(db.tx.users[userId].update({ highScore: score }));
+      db.transact(db.tx.$users[userId].update({ highScore: score }));
     }
   }, []);
   const isHighScore = score > highScore ? true : false;

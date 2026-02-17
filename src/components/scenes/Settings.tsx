@@ -76,7 +76,7 @@ function Settings({ navigation }: Props) {
   const user = useContext(UserContext)!;
   const [handle, setHandle] = useState(user.handle || randomHandle());
   const handleSave = () => {
-    db.transact(db.tx.users[user.id].update({ handle }));
+    db.transact(db.tx.$users[user.id].update({ handle }));
     navigation.navigate("Main");
   };
   return (

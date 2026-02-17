@@ -2,10 +2,11 @@ import { i } from "@instantdb/react-native";
 
 const _schema = i.schema({
   entities: {
-    users: i.entity({
-      handle: i.string(),
-      highScore: i.number(),
-      created_at: i.string(),
+    $users: i.entity({
+      email: i.any().unique().indexed(),
+      handle: i.string().optional(),
+      highScore: i.number().optional(),
+      created_at: i.string().optional(),
     }),
     rooms: i.entity({
       code: i.string().optional().indexed(),
@@ -30,11 +31,11 @@ const _schema = i.schema({
   links: {
     roomUsers: {
       forward: { on: "rooms", has: "many", label: "users" },
-      reverse: { on: "users", has: "many", label: "rooms" },
+      reverse: { on: "$users", has: "many", label: "rooms" },
     },
     gameUsers: {
       forward: { on: "games", has: "many", label: "users" },
-      reverse: { on: "users", has: "many", label: "games" },
+      reverse: { on: "$users", has: "many", label: "games" },
     },
     gameRooms: {
       forward: { on: "games", has: "many", label: "rooms" },

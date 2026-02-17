@@ -3,8 +3,6 @@ import "../global.css";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { id } from "@instantdb/react-native";
 
 import { db } from "@/lib/db";
 import { UserContext } from "@/Context";
@@ -16,60 +14,52 @@ import {
 } from "@/components/shared/Placeholder";
 import { now } from "@/utils/time";
 
-// Consts
-// ------------------
-const USER_ID_KEY = "USER_ID_KEY";
-
 // App
 // ------------------
 function App() {
-  const [userId, setUserId] = useState<string | null>(null);
+  const { isLoading, user: authUser, error } = db.useAuth();
 
-  // Create a new userId if didn't have one saved previously
   useEffect(() => {
-    const fetchOrSetUserId = async () => {
-      let storageUserId = await AsyncStorage.getItem(USER_ID_KEY);
+    if (isLoading) return;
+    if (!authUser) {
+      db.auth.signInAsGuest();
+    }
+  }, [isLoading, authUser]);
 
-      if (!storageUserId) {
-        storageUserId = id();
-        await AsyncStorage.setItem(USER_ID_KEY, storageUserId);
-      }
+  if (isLoading || !authUser) return <LoadingPlaceholder />;
+  if (error) return <ErrorPlaceholder error={error} />;
 
-      setUserId(storageUserId);
-    };
-
-    fetchOrSetUserId();
-  }, []);
-
-  if (userId === null) return <LoadingPlaceholder />;
-  return <AppUser userId={userId} />;
+  return <AppUser userId={authUser.id} />;
 }
 
 function AppUser({ userId }: { userId: string }) {
   const { isLoading, error, data } = db.useQuery({
-    users: { $: { where: { id: userId } } },
+    $users: { $: { where: { id: userId } } },
   });
   const [userExists, setUserExists] = useState(false);
 
-  // Create user if they don't exist
+  // Create user profile if they don't have one yet
   useEffect(() => {
     if (isLoading || !data) {
       return;
     }
-    if (data.users.length == 0) {
+    const u = data.$users[0];
+    if (u && !u.handle) {
       db.transact(
-        db.tx.users[userId].update({
+        db.tx.$users[userId].update({
           handle: randomHandle(),
           highScore: 0,
           created_at: now(),
         })
       );
     }
-    setUserExists(true);
+    if (u) {
+      setUserExists(true);
+    }
   }, [isLoading, data]);
   if (isLoading || !userExists) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
-  const user = data.users[0];
+  const user = data.$users[0];
 
   return (
     <SafeAreaProvider>
