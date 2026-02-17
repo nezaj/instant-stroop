@@ -31,7 +31,7 @@ function GameOverSingleplayer({ navigation, route }: Props) {
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
-        <View className="justify-between space-y-1">
+        <View className="justify-between gap-y-1">
           <Text className={`font-bold text-xl ${textColor}`}>
             Best: {bestScore}
           </Text>
@@ -48,7 +48,7 @@ function GameOverSingleplayer({ navigation, route }: Props) {
 
       {/* High Score */}
       {isHighScore && (
-        <View className="flex-1 justify-center items-center mt-16 space-y-16">
+        <View className="flex-1 justify-center items-center mt-16 gap-y-16">
           <Text className="font-bold text-3xl text-yellow-400">
             New High Score!
           </Text>
@@ -57,7 +57,7 @@ function GameOverSingleplayer({ navigation, route }: Props) {
       )}
 
       {/* Buttons */}
-      <View className="flex-1 justify-end space-y-4 my-4">
+      <View className="flex-1 justify-end gap-y-4 my-4">
         <RegularButton
           onPress={() =>
             navigation.navigate("Singleplayer", { resetGame: true })

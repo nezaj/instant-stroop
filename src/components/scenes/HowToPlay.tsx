@@ -102,7 +102,7 @@ function HowToPlay({ navigation }: Props) {
   return (
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row flex-wrap space-x-2 items-center justify-center">
+        <View className="flex-row flex-wrap gap-x-2 items-center justify-center">
           {stroops.map(([label, color], i) => (
             <Stroop key={i} label={label} color={color} />
           ))}

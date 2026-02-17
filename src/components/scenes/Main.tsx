@@ -22,7 +22,7 @@ function Main({ navigation }: Props) {
   const { id: userId } = user;
   return (
     <SafeView className={`flex-1 items-center justify-around ${bgColor}`}>
-      <View className="flex-1 justify-center space-y-2">
+      <View className="flex-1 justify-center gap-y-2">
         <Text className="text-8xl text-center">🧇</Text>
         <Text className="justify-end text-5xl font-bold text-yellow-400">
           Stroopwafel
@@ -63,7 +63,7 @@ function Main({ navigation }: Props) {
           Join Game
         </RegularButton>
 
-        <View className="flex-row my-2 space-x-4">
+        <View className="flex-row my-2 gap-x-4">
           <View>
             <HalfButton onPress={() => navigation.navigate("HowToPlay")}>
               Rules

@@ -78,7 +78,7 @@ function Singleplayer({ navigation, route }: Props) {
     <SafeView className={`flex-1 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center px-8">
-        <View className="justify-between space-y-1">
+        <View className="justify-between gap-y-1">
           <Text className={`font-bold text-xl ${infoTextColor}`}>
             Best: {highScore}
           </Text>

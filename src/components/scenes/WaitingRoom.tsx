@@ -56,7 +56,7 @@ function startMultiplayerGame(room: any) {
     db.tx.games[gameId].link({ users: u.id })
   );
   const createPoints = playerIds.map((playerId: string) =>
-    db.tx.points[id()].update({ val: 0, userId: playerId }).link({ games: gameId })
+    db.tx.points[id()].update({ val: 0, userId: playerId }).link({ game: gameId })
   );
   const updateRoom = db.tx.rooms[room.id]
     .update({
@@ -111,7 +111,7 @@ function UserPill({ user, room, isReady, isAdmin }: UserPillProps) {
   return (
     <View className="flex-row rounded-xl border-2 border-violet-300 items-center my-2 py-4">
       <View className={`mx-4 w-12 h-12 ${avatarStyle} rounded-full`} />
-      <View className="flex-1 space-y-1">
+      <View className="flex-1 gap-y-1">
         <Text className="text-lg text-slate-100 font-bold">{handle}</Text>
         <Text className="text-md text-slate-100 font-semibold">{titleStr}</Text>
       </View>
@@ -228,7 +228,7 @@ function WaitingRoom({ route, navigation }: Props) {
             })}
           </View>
         </ScrollView>
-        <View className="flex-1 justify-end space-y-4">
+        <View className="flex-1 justify-end gap-y-4">
           <InviteButton code={room.code} />
           {isAdmin ? (
             <RegularButton onPress={() => startMultiplayerGame(room)}>

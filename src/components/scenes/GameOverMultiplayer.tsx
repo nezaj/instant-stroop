@@ -82,7 +82,7 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
       </View>
 
       {/* Rankings */}
-      <View className="flex-1 justify-center items-center space-y-2">
+      <View className="flex-1 justify-center items-center gap-y-2">
         {top3.map(([rank, player]) => (
           <Text key={rank} className={`font-bold text-2xl ${textColor}`}>
             {rankIcons[rank]} {player?.handle}
@@ -91,7 +91,7 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
       </View>
 
       {/* Buttons */}
-      <View className="justify-center space-y-4 my-4">
+      <View className="justify-center gap-y-4 my-4">
         <RegularButton
           onPress={() => navigation.navigate("WaitingRoom", { code })}
         >
