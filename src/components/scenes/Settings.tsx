@@ -3,9 +3,8 @@ import {
   View,
   Text,
   TextInput,
-  Animated,
 } from "react-native";
-import React, { useState, useRef, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 
 import { db } from "@/lib/db";
@@ -39,25 +38,13 @@ function SaveHandleButton({
   onPress: () => void;
 }) {
   const isValid = isValidHandle(handle);
-  const animatedValue = useRef(new Animated.Value(isValid ? 0 : 1)).current;
-  const interpolatedBackgroundColor = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [validColor, invalidColor],
-  });
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isValid ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isValid]);
 
   return (
     <TouchableOpacity
       disabled={!isValid}
       className={`${regularButtonStyle} my-4`}
       style={{
-        backgroundColor: interpolatedBackgroundColor as any,
+        backgroundColor: isValid ? validColor : invalidColor,
         shadowColor: "#6200EA",
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,

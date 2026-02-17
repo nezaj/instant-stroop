@@ -3,9 +3,8 @@ import {
   View,
   Text,
   TextInput,
-  Animated,
 } from "react-native";
-import React, { useState, useRef, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import Toast from "react-native-root-toast";
 
@@ -36,26 +35,11 @@ function JoinRoomButton({
   isValidRoomCode: boolean;
   onPress: () => void;
 }) {
-  const animatedValue = useRef(
-    new Animated.Value(isValidRoomCode ? 0 : 1)
-  ).current;
-  const interpolatedBackgroundColor = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [validColor, invalidColor],
-  });
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isValidRoomCode ? 0 : 1,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [isValidRoomCode]);
-
   return (
     <TouchableOpacity
       disabled={!isValidRoomCode}
       className={`${regularButtonStyle} my-4`}
-      style={{ backgroundColor: interpolatedBackgroundColor as any }}
+      style={{ backgroundColor: isValidRoomCode ? validColor : invalidColor }}
       onPress={onPress}
     >
       <Text className={`${textStyle}`}>Join</Text>

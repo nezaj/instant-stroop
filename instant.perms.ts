@@ -30,9 +30,9 @@ const rules = {
     },
     bind: {
       isHost: "auth.id == data.hostId",
-      // Non-hosts can only toggle ready and clear currentGameId (play again)
+      // Non-hosts can toggle ready, clear currentGameId (play again), and join/leave (users link)
       onlyMemberFields:
-        "request.modifiedFields.all(field, field in ['readyIds', 'currentGameId'])",
+        "request.modifiedFields.all(field, field in ['readyIds', 'currentGameId', 'users'])",
     },
   },
   games: {
