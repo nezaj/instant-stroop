@@ -38,6 +38,7 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
 
   // Handle navigating away from game
   useEffect(() => {
+    if (!navigation.isFocused()) return;
     if (isLoading) {
       return;
     }
@@ -93,7 +94,16 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
       {/* Buttons */}
       <View className="justify-center gap-y-4 my-4">
         <RegularButton
-          onPress={() => navigation.navigate("WaitingRoom", { code })}
+          onPress={() => {
+            db.transact(db.tx.rooms[room.id].update({ currentGameId: "" }));
+            navigation.reset({
+              index: 1,
+              routes: [
+                { name: "Main" },
+                { name: "WaitingRoom", params: { code } },
+              ],
+            });
+          }}
         >
           Play Again
         </RegularButton>
@@ -101,7 +111,7 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
         <RegularButton
           onPress={() => {
             leaveRoomTx(user.id, room);
-            navigation.navigate("Main");
+            navigation.reset({ index: 0, routes: [{ name: "Main" }] });
           }}
         >
           Menu

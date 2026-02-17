@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
+import Toast from "react-native-root-toast";
 
 import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
@@ -84,7 +85,15 @@ function JoinRoom({ route, navigation }: Props) {
 
   if (error) return <ErrorPlaceholder error={error} />;
 
+  const isKicked = room?.kickedIds?.includes(user.id);
+
   const handleJoin = () => {
+    if (isKicked) {
+      Toast.show("You were kicked from this room.", {
+        duration: Toast.durations.LONG,
+      });
+      return;
+    }
     setJoinRoom(room);
   };
 
@@ -106,7 +115,7 @@ function JoinRoom({ route, navigation }: Props) {
           />
         </View>
         <View className="flex-1 justify-end">
-          <JoinRoomButton isValidRoomCode={!!room} onPress={handleJoin} />
+          <JoinRoomButton isValidRoomCode={!!room && !isKicked} onPress={handleJoin} />
         </View>
       </View>
     </SafeView>

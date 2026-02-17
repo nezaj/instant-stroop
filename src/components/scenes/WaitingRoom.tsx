@@ -46,18 +46,30 @@ function startMultiplayerGame(room: any) {
   const playerIds = users
     .filter((u: any) => u.id === room.hostId || room.readyIds.includes(u.id))
     .map((u: any) => u.id);
-  const createGame = db.tx.games[gameId].update({
+
+  // Create points with unique IDs for each player
+  const pointEntries = playerIds.map((playerId: string) => ({
+    pointId: id(),
+    playerId,
+  }));
+  const createPoints = pointEntries.map(({ pointId, playerId }: { pointId: string; playerId: string }) =>
+    db.tx.points[pointId].update({ val: 0, userId: playerId })
+  );
+
+  // Chain all links onto the game entity to avoid duplicate record errors
+  let createGame: any = db.tx.games[gameId].update({
     status: GAME_IN_PROGRESS,
     playerIds,
     colors,
     created_at: now(),
   });
-  const addUserGameLinks = users.map((u: any) =>
-    db.tx.games[gameId].link({ users: u.id })
-  );
-  const createPoints = playerIds.map((playerId: string) =>
-    db.tx.points[id()].update({ val: 0, userId: playerId }).link({ game: gameId })
-  );
+  for (const u of users) {
+    createGame = createGame.link({ users: u.id });
+  }
+  for (const { pointId } of pointEntries) {
+    createGame = createGame.link({ points: pointId });
+  }
+
   const updateRoom = db.tx.rooms[room.id]
     .update({
       currentGameId: gameId,
@@ -65,7 +77,7 @@ function startMultiplayerGame(room: any) {
     })
     .link({ games: gameId });
 
-  db.transact([createGame, ...addUserGameLinks, ...createPoints, updateRoom]);
+  db.transact([createGame, ...createPoints, updateRoom]);
 }
 
 function InviteButton({ code }: { code: string }) {
@@ -167,6 +179,7 @@ function WaitingRoom({ route, navigation }: Props) {
 
   // Handle navigating away from rooms
   useEffect(() => {
+    if (!navigation.isFocused()) return;
     if (isLoading) {
       return;
     }

@@ -32,6 +32,7 @@ function Multiplayer({ route, navigation }: Props) {
 
   // Handle navigating away from game
   useEffect(() => {
+    if (!navigation.isFocused()) return;
     if (isLoading) {
       return;
     }
