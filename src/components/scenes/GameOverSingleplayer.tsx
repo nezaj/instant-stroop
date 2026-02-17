@@ -17,14 +17,15 @@ type Props = StackScreenProps<RootStackParamList, "GameOverSingleplayer">;
 function GameOverSingleplayer({ navigation, route }: Props) {
   const user = useContext(UserContext)!;
   const { score } = route.params;
-  const { id: userId, highScore } = user;
+  const { id: userId } = user;
+  const highScore = user.highScore ?? 0;
 
   useEffect(() => {
     if (score > highScore) {
       db.transact(db.tx.$users[userId].update({ highScore: score }));
     }
   }, []);
-  const isHighScore = score > highScore ? true : false;
+  const isHighScore = score > highScore;
   const bestScore = isHighScore ? score : highScore;
 
   return (
