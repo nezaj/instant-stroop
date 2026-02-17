@@ -53,7 +53,7 @@ function AppUser({ userId }: { userId: string }) {
 
   // Create user if they don't exist
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !data) {
       return;
     }
     if (data.users.length == 0) {

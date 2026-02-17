@@ -177,7 +177,7 @@ function WaitingRoom({ route, navigation }: Props) {
       navigation.navigate("Main");
       return;
     }
-    if (!room.users.find((u: any) => u.id === user.id)) {
+    if (room.users.length > 0 && !room.users.find((u: any) => u.id === user.id)) {
       navigation.navigate("Main");
       return;
     }

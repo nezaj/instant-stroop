@@ -38,7 +38,7 @@ function Singleplayer({ navigation, route }: Props) {
       setScore(INITIAL_SCORE);
       setLabel(chooseRandomColor());
       setColor(chooseRandomColor());
-      route.params.resetGame = false;
+      navigation.setParams({ resetGame: false });
     }
   }, [resetGame]);
 
@@ -97,23 +97,27 @@ function Singleplayer({ navigation, route }: Props) {
       </View>
 
       {/* Grid Boxes */}
-      <View className="flex-1 flex-row flex-wrap justify-center mx-8">
-        <TouchableOpacity
-          onPress={() => onPress("red")}
-          className="w-28 h-28 bg-red-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("green")}
-          className="w-28 h-28 bg-green-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("blue")}
-          className="w-28 h-28 bg-blue-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("yellow")}
-          className="w-28 h-28 bg-yellow-400 m-1"
-        ></TouchableOpacity>
+      <View className="flex-1 justify-center items-center">
+        <View className="flex-row">
+          <TouchableOpacity
+            onPress={() => onPress("red")}
+            className="w-28 h-28 bg-red-400 m-1"
+          ></TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPress("green")}
+            className="w-28 h-28 bg-green-400 m-1"
+          ></TouchableOpacity>
+        </View>
+        <View className="flex-row">
+          <TouchableOpacity
+            onPress={() => onPress("blue")}
+            className="w-28 h-28 bg-blue-400 m-1"
+          ></TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPress("yellow")}
+            className="w-28 h-28 bg-yellow-400 m-1"
+          ></TouchableOpacity>
+        </View>
       </View>
     </SafeView>
   );
