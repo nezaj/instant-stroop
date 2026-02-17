@@ -47,7 +47,7 @@ function JoinRoomButton({
     Animated.timing(animatedValue, {
       toValue: isValidRoomCode ? 0 : 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   }, [isValidRoomCode]);
 

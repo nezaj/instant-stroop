@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import Toast from "react-native-root-toast";
 
@@ -95,7 +95,7 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
       <View className="justify-center gap-y-4 my-4">
         <RegularButton
           onPress={() => {
-            db.transact(db.tx.rooms[room.id].update({ currentGameId: "" }));
+            db.transact(db.tx.rooms[room.id].update({ currentGameId: null }));
             navigation.reset({
               index: 1,
               routes: [

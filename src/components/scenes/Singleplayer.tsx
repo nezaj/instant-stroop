@@ -44,6 +44,7 @@ function Singleplayer({ navigation, route }: Props) {
 
   // Countdown
   useEffect(() => {
+    if (clock === 0) return;
     const timer = setInterval(() => {
       setClock((prevClock) => {
         if (prevClock < 2) {
@@ -54,7 +55,7 @@ function Singleplayer({ navigation, route }: Props) {
     }, 600);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [clock === 0]);
 
   // End Game
   useEffect(() => {
@@ -64,7 +65,7 @@ function Singleplayer({ navigation, route }: Props) {
   }, [clock]);
 
   const onPress = (sqColor: string) => {
-    if (sqColor == label) {
+    if (sqColor === label) {
       setScore((prevScore) => prevScore + 1);
       setClock((prevClock) => prevClock + 1);
       setLabel(chooseRandomColor());

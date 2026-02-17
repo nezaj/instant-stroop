@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import Toast from "react-native-root-toast";
 

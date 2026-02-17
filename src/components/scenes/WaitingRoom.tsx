@@ -170,7 +170,8 @@ function WaitingRoom({ route, navigation }: Props) {
           tintColor={HEADER_TINT_COLOR}
           label="Leave"
           onPress={() => {
-            leaveRoomTx(user.id, room);
+            if (room) leaveRoomTx(user.id, room);
+            navigation.navigate("Main");
           }}
         />
       ),
@@ -190,14 +191,14 @@ function WaitingRoom({ route, navigation }: Props) {
       navigation.navigate("Main");
       return;
     }
-    if (room.users.length > 0 && !room.users.find((u: any) => u.id === user.id)) {
-      navigation.navigate("Main");
-      return;
-    }
     if (room.kickedIds.includes(user.id)) {
       Toast.show("You were kicked from the room 🤷‍♂️.", {
         duration: Toast.durations.SHORT,
       });
+      navigation.navigate("Main");
+      return;
+    }
+    if (room.users.length > 0 && !room.users.find((u: any) => u.id === user.id)) {
       navigation.navigate("Main");
       return;
     }
