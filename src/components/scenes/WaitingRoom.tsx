@@ -30,7 +30,7 @@ interface UserWithRole {
   isYou: boolean;
 }
 
-function userSort(a: UserWithRole, b: UserWithRole): number {
+function userSort(a: UserWithRole, b: UserWithRole) {
   if (a.isHost) return -1;
   if (b.isHost) return 1;
   if (a.isYou) return -1;

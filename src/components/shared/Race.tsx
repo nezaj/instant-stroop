@@ -29,23 +29,23 @@ function PlayerPosition({ handle, pos, goal, width }: PlayerPositionProps) {
 
   return (
     <Animated.View
-      className={`${avatarStyle} absolute  w-12 h-12 rounded-full`}
+      className={`${avatarStyle} absolute w-12 h-12 rounded-full`}
       style={{ transform: [{ translateX: translation }] }}
     />
   );
 }
 
 interface Point {
-  userId: string | number;
+  userId: string;
   val: number;
 }
 
 interface Player {
-  id: string | number;
+  id: string;
   handle: string;
 }
 
-function extractPlayerPoints(points: Point[], playerId: string | number): number {
+function extractPlayerPoints(points: Point[], playerId: string) {
   return points.find((point) => point.userId === playerId)!.val;
 }
 

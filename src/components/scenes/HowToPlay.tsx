@@ -143,12 +143,12 @@ function HowToPlay({ navigation }: Props) {
             <Race
               goal={GOAL}
               players={[
-                { id: 1, handle: "moop" },
-                { id: 2, handle: "boop" },
+                { id: "1", handle: "moop" },
+                { id: "2", handle: "boop" },
               ]}
               points={[
-                { userId: 1, val: Math.min(score, GOAL) },
-                { userId: 2, val: 6 },
+                { userId: "1", val: Math.min(score, GOAL) },
+                { userId: "2", val: 6 },
               ]}
             />
             <Text

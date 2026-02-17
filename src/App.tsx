@@ -66,7 +66,6 @@ function AppUser({ userId }: { userId: string }) {
       );
     }
     setUserExists(true);
-    return () => {};
   }, [isLoading, data]);
   if (isLoading || !userExists) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;

@@ -14,7 +14,7 @@ export const colorStyleMap: Record<string, { color: string }> = {
   "text-yellow-400": { color: "rgb(250 204 21)" },
 };
 
-export function chooseRandomColor(): string {
+export function chooseRandomColor() {
   const colors = ["red", "green", "blue", "yellow"];
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];

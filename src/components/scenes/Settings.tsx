@@ -27,7 +27,7 @@ const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;
 
-function isValidHandle(handle: string): boolean {
+function isValidHandle(handle: string) {
   return handle.length > 2 && handle.length < 17 && isAlphanumeric(handle);
 }
 
