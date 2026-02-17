@@ -11,7 +11,7 @@ const colors = [
   "bg-purple-400",
 ];
 
-export function avatarColor(handle) {
+export function avatarColor(handle: string): string {
   const idx = stringModulus(handle, colors.length);
   return colors[idx];
 }

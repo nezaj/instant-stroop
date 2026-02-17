@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
 import Toast from "react-native-root-toast";
 
 import {
@@ -7,7 +8,7 @@ import {
   MULTIPLAYER_SCORE_TO_WIN,
   colorStyleMap,
 } from "@/game";
-import { useQuery, tx, transact } from "@instantdb/react-native";
+import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
 import { primaryBackgroundColor as bgColor } from "@/components/shared/styles";
@@ -16,15 +17,18 @@ import {
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
+import type { RootStackParamList } from "@/Navigator";
 
-function Multiplayer({ route, navigation }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "Multiplayer">;
+
+function Multiplayer({ route, navigation }: Props) {
+  const user = useContext(UserContext)!;
   const { gameId } = route.params;
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data } = db.useQuery({
     games: { users: {}, rooms: {}, points: {}, $: { where: { id: gameId } } },
   });
 
-  const game = data?.games?.[0];
+  const game = data?.games?.[0] as any;
 
   // Handle navigating away from game
   useEffect(() => {
@@ -50,33 +54,32 @@ function Multiplayer({ route, navigation }) {
 
   const { playerIds, colors, users, points, rooms } = game;
 
-  const userPoints = points.find((p) => p.userId === user.id);
+  const userPoints = points.find((p: any) => p.userId === user.id);
   const isSpectator = !userPoints;
   const pos = isSpectator ? 0 : userPoints.val;
   const { color, label } = colors[pos];
 
   const textColor = `text-${color}-400`;
 
-  const onPress = (sqColor) => {
-    // (TODO): Implement spectactor mode!
+  const onPress = (sqColor: string) => {
     if (isSpectator) {
       return;
     }
     const { id: pointsId, val } = userPoints;
     const newVal = sqColor === label ? val + 1 : Math.max(val - 2, 0);
-    let txs = [];
-    txs.push(tx.points[pointsId].update({ val: newVal }));
+    let txs: any[] = [];
+    txs.push(db.tx.points[pointsId].update({ val: newVal }));
     if (newVal === MULTIPLAYER_SCORE_TO_WIN) {
       const roomId = rooms[0].id;
-      const updateGame = tx.games[gameId].update({ status: GAME_COMPLETED });
-      const updateRoom = tx.rooms[roomId].update({ currentGameId: null });
+      const updateGame = db.tx.games[gameId].update({ status: GAME_COMPLETED });
+      const updateRoom = db.tx.rooms[roomId].update({ currentGameId: null });
       txs.push(updateGame);
       txs.push(updateRoom);
     }
-    transact([...txs]);
+    db.transact([...txs]);
   };
 
-  const players = users.filter((u) => playerIds.includes(u.id));
+  const players = users.filter((u: any) => playerIds.includes(u.id));
   return (
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       <View className="mx-8 mt-4">

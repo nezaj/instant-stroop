@@ -1,7 +1,9 @@
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View } from "react-native";
 import React, { useEffect, useContext } from "react";
-import { useQuery, transact, tx } from "@instantdb/react-native";
+import { StackScreenProps } from "@react-navigation/stack";
+import Toast from "react-native-root-toast";
 
+import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
 import Race from "@/components/shared/Race";
 import {
@@ -14,23 +16,25 @@ import {
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
-import { now } from "@/utils/time";
 import { leaveRoomTx } from "@/game";
+import type { RootStackParamList } from "@/Navigator";
 
 // Consts
 // ------------------
 const rankIcons = ["🏆", "🐇", "🐢"];
 
+type Props = StackScreenProps<RootStackParamList, "GameOverMultiplayer">;
+
 // Screen
 // ------------------
-function GameOverMultiPlayer({ navigation, route }) {
-  const user = useContext(UserContext);
+function GameOverMultiPlayer({ navigation, route }: Props) {
+  const user = useContext(UserContext)!;
   const { gameId } = route.params;
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data } = db.useQuery({
     games: { users: {}, rooms: {}, points: {}, $: { where: { id: gameId } } },
   });
 
-  const game = data?.games?.[0];
+  const game = data?.games?.[0] as any;
 
   // Handle navigating away from game
   useEffect(() => {
@@ -51,15 +55,17 @@ function GameOverMultiPlayer({ navigation, route }) {
 
   const { points, rooms, playerIds, users } = game;
   const room = rooms[0];
-  const { code, id: roomId, hostId } = room;
+  const { code } = room;
 
-  const rankedPoints = points.sort((a, b) => b.val - a.val);
-  const userMap = users.reduce((xs, u) => {
+  const rankedPoints = [...points].sort((a: any, b: any) => b.val - a.val);
+  const userMap = users.reduce((xs: any, u: any) => {
     xs[u.id] = u;
     return xs;
-  }, {});
-  const players = playerIds.map((playerId) => userMap[playerId]);
-  const top3 = rankedPoints.map((p, i) => [i, userMap[p.userId]]).slice(0, 3);
+  }, {} as Record<string, any>);
+  const players = playerIds.map((playerId: string) => userMap[playerId]);
+  const top3 = rankedPoints
+    .map((p: any, i: number) => [i, userMap[p.userId]] as const)
+    .slice(0, 3);
 
   return (
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
@@ -77,9 +83,9 @@ function GameOverMultiPlayer({ navigation, route }) {
 
       {/* Rankings */}
       <View className="flex-1 justify-center items-center space-y-2">
-        {top3.map(([rank, { handle }]) => (
+        {top3.map(([rank, player]) => (
           <Text key={rank} className={`font-bold text-2xl ${textColor}`}>
-            {rankIcons[rank]} {handle}
+            {rankIcons[rank]} {player?.handle}
           </Text>
         ))}
       </View>

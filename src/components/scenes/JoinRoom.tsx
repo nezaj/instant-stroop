@@ -5,9 +5,10 @@ import {
   TextInput,
   Animated,
 } from "react-native";
-import { useQuery, transact, tx } from "@instantdb/react-native";
 import React, { useState, useRef, useEffect, useContext } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
 
+import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
 import {
   primaryBackgroundColor as bgColor,
@@ -15,10 +16,10 @@ import {
   infoTextColor as textColor,
 } from "@/components/shared/styles";
 import {
-  LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
+import type { RootStackParamList } from "@/Navigator";
 
 const textStyle = "text-4xl text-center";
 
@@ -27,7 +28,13 @@ const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;
 
-function JoinRoomButton({ isValidRoomCode, onPress }) {
+function JoinRoomButton({
+  isValidRoomCode,
+  onPress,
+}: {
+  isValidRoomCode: boolean;
+  onPress: () => void;
+}) {
   const animatedValue = useRef(
     new Animated.Value(isValidRoomCode ? 0 : 1)
   ).current;
@@ -47,7 +54,7 @@ function JoinRoomButton({ isValidRoomCode, onPress }) {
     <TouchableOpacity
       disabled={!isValidRoomCode}
       className={`${regularButtonStyle} my-4`}
-      style={{ backgroundColor: interpolatedBackgroundColor }}
+      style={{ backgroundColor: interpolatedBackgroundColor as any }}
       onPress={onPress}
     >
       <Text className={`${textStyle}`}>Join</Text>
@@ -55,29 +62,29 @@ function JoinRoomButton({ isValidRoomCode, onPress }) {
   );
 }
 
-function JoinRoom({ route, navigation }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "JoinRoom">;
+
+function JoinRoom({ route, navigation }: Props) {
+  const user = useContext(UserContext)!;
   const [roomCode, setRoomCode] = useState(route.params?.code || "");
-  const [joinRoom, setJoinRoom] = useState(null);
-  const { error, data } = useQuery({
+  const [joinRoom, setJoinRoom] = useState<any>(null);
+  const { error, data } = db.useQuery({
     rooms: { $: { where: { code: roomCode } } },
   });
-  const room = data?.["rooms"]?.[0];
+  const room = data?.rooms?.[0];
 
   useEffect(() => {
     if (!joinRoom) return;
-    transact(tx.rooms[joinRoom.id].link({ users: user.id }));
+    db.transact(db.tx.rooms[joinRoom.id].link({ users: user.id }));
     const nextScreen = joinRoom.currentGameId
-      ? ["Multiplayer", { gameId: joinRoom.currentGameId }]
-      : ["WaitingRoom", { code: joinRoom.code }];
+      ? (["Multiplayer", { gameId: joinRoom.currentGameId }] as const)
+      : (["WaitingRoom", { code: joinRoom.code }] as const);
     navigation.navigate(...nextScreen);
   }, [joinRoom?.code]);
 
   if (error) return <ErrorPlaceholder error={error} />;
 
   const handleJoin = () => {
-    // (XXX): We use an extra state variable to avoid a flicker. Otheriwse
-    // would have transacted here
     setJoinRoom(room);
   };
 

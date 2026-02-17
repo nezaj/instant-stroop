@@ -1,11 +1,18 @@
 import { useEffect, useState, useRef } from "react";
-import { View, Animated, Text } from "react-native";
+import { View, Animated, Text, LayoutChangeEvent } from "react-native";
 import { avatarColor } from "@/utils/profile";
 import { MULTIPLAYER_SCORE_TO_WIN } from "@/game";
 
-function PlayerPosition({ handle, pos, goal, width }) {
+interface PlayerPositionProps {
+  handle: string;
+  pos: number;
+  goal: number;
+  width: number | null;
+}
+
+function PlayerPosition({ handle, pos, goal, width }: PlayerPositionProps) {
   const avatarStyle = avatarColor(handle);
-  const shift = Math.round((pos / goal) * width * 0.82);
+  const shift = Math.round((pos / goal) * (width ?? 0) * 0.82);
   const translation = useRef(new Animated.Value(shift)).current;
 
   useEffect(() => {
@@ -28,19 +35,35 @@ function PlayerPosition({ handle, pos, goal, width }) {
   );
 }
 
-function extractPlayerPoints(points, playerId) {
-  return points.find((point) => point.userId === playerId).val;
+interface Point {
+  userId: string | number;
+  val: number;
+}
+
+interface Player {
+  id: string | number;
+  handle: string;
+}
+
+function extractPlayerPoints(points: Point[], playerId: string | number): number {
+  return points.find((point) => point.userId === playerId)!.val;
+}
+
+interface RaceProps {
+  players: Player[];
+  points: Point[];
+  goal?: number;
 }
 
 export default function Race({
   players,
   points,
   goal = MULTIPLAYER_SCORE_TO_WIN,
-}) {
-  const [width, setWidth] = useState(null);
+}: RaceProps) {
+  const [width, setWidth] = useState<number | null>(null);
   const hasWidthBeenSet = useRef(false);
 
-  const handleLayout = (event) => {
+  const handleLayout = (event: LayoutChangeEvent) => {
     if (!hasWidthBeenSet.current) {
       const { width } = event.nativeEvent.layout;
       setWidth(width);

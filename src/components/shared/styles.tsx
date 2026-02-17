@@ -1,4 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
+import { ReactNode } from "react";
 
 export const primaryBackgroundColor = "bg-violet-600";
 export const primaryTextColor = "text-slate-800";
@@ -10,7 +11,12 @@ export const regularButtonStyle = `h-24 ${primaryButtonBackgroundColor} rounded-
 const halfButtonStyle = `h-24 ${primaryButtonBackgroundColor} rounded-xl justify-center px-4`;
 const primaryText = `text-4xl text-center font-semibold ${primaryTextColor}`;
 
-export function RegularButton({ onPress, children, props }) {
+interface ButtonProps {
+  onPress: () => void;
+  children: ReactNode;
+}
+
+export function RegularButton({ onPress, children }: ButtonProps) {
   return (
     <TouchableOpacity
       className={`${regularButtonStyle}`}
@@ -27,7 +33,7 @@ export function RegularButton({ onPress, children, props }) {
   );
 }
 
-export function HalfButton({ onPress, children }) {
+export function HalfButton({ onPress, children }: ButtonProps) {
   return (
     <TouchableOpacity
       className={`${halfButtonStyle}`}

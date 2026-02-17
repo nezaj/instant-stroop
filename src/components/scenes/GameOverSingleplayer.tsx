@@ -1,7 +1,8 @@
 import { Text, View } from "react-native";
 import { useEffect, useContext } from "react";
-import { transact, tx } from "@instantdb/react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 
+import { db } from "@/lib/db";
 import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -9,15 +10,18 @@ import {
   primaryBackgroundColor as bgColor,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import type { RootStackParamList } from "@/Navigator";
 
-function GameOverSingleplayer({ navigation, route }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "GameOverSingleplayer">;
+
+function GameOverSingleplayer({ navigation, route }: Props) {
+  const user = useContext(UserContext)!;
   const { score } = route.params;
   const { id: userId, highScore } = user;
 
   useEffect(() => {
     if (score > highScore) {
-      transact(tx.users[userId].update({ highScore: score }));
+      db.transact(db.tx.users[userId].update({ highScore: score }));
     }
   }, []);
   const isHighScore = score > highScore ? true : false;

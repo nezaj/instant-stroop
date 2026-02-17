@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -10,13 +11,14 @@ import {
 import Race from "@/components/shared/Race";
 
 import { chooseRandomColor, colorStyleMap } from "@/game";
+import type { RootStackParamList } from "@/Navigator";
 
 const GOAL = 13;
 
 const infoTextStyle =
   "text-xl my-4 text-slate-100 font-semibold text-left leading-8";
 
-const stroops = [
+const stroops: [string, string][] = [
   ["red", "text-red-400"],
   ["yellow", "text-blue-400"],
   ["blue", "text-green-400"],
@@ -49,7 +51,7 @@ function MultiplayerHeader() {
   return <View className="flex-row my-2">{characters}</View>;
 }
 
-function Stroop({ label, color }) {
+function Stroop({ label, color }: { label: string; color: string }) {
   return (
     <Text className={`text-center text-3xl uppercase font-bold m-1 ${color}`}>
       {label}
@@ -57,12 +59,14 @@ function Stroop({ label, color }) {
   );
 }
 
-function HowToPlay({ navigation }) {
+type Props = StackScreenProps<RootStackParamList, "HowToPlay">;
+
+function HowToPlay({ navigation }: Props) {
   const [score, setScore] = useState(0);
   const [label, setLabel] = useState(chooseRandomColor());
   const [color, setColor] = useState(chooseRandomColor());
 
-  const onPress = (sqColor) => {
+  const onPress = (sqColor: string) => {
     if (sqColor == label) {
       setScore((prevScore) => prevScore + 1);
       setLabel(chooseRandomColor());

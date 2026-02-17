@@ -5,9 +5,10 @@ import {
   TextInput,
   Animated,
 } from "react-native";
-import { transact, tx } from "@instantdb/react-native";
 import React, { useState, useRef, useEffect, useContext } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
 
+import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
 import randomHandle from "@/utils/randomHandle";
 import { isAlphanumeric } from "@/utils/string";
@@ -17,6 +18,7 @@ import {
   infoTextColor as textColor,
 } from "@/components/shared/styles";
 import { UserContext } from "@/Context";
+import type { RootStackParamList } from "@/Navigator";
 
 const textStyle = "text-4xl text-center";
 
@@ -25,11 +27,17 @@ const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;
 
-function isValidHandle(handle) {
+function isValidHandle(handle: string): boolean {
   return handle.length > 2 && handle.length < 17 && isAlphanumeric(handle);
 }
 
-function SaveHandleButton({ handle, onPress }) {
+function SaveHandleButton({
+  handle,
+  onPress,
+}: {
+  handle: string;
+  onPress: () => void;
+}) {
   const isValid = isValidHandle(handle);
   const animatedValue = useRef(new Animated.Value(isValid ? 0 : 1)).current;
   const interpolatedBackgroundColor = animatedValue.interpolate({
@@ -49,7 +57,7 @@ function SaveHandleButton({ handle, onPress }) {
       disabled={!isValid}
       className={`${regularButtonStyle} my-4`}
       style={{
-        backgroundColor: interpolatedBackgroundColor,
+        backgroundColor: interpolatedBackgroundColor as any,
         shadowColor: "#6200EA",
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,
@@ -62,11 +70,13 @@ function SaveHandleButton({ handle, onPress }) {
   );
 }
 
-function Settings({ navigation }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "Settings">;
+
+function Settings({ navigation }: Props) {
+  const user = useContext(UserContext)!;
   const [handle, setHandle] = useState(user.handle || randomHandle());
   const handleSave = () => {
-    transact(tx.users[user.id].update({ handle }));
+    db.transact(db.tx.users[user.id].update({ handle }));
     navigation.navigate("Main");
   };
   return (

@@ -26,11 +26,11 @@ const nouns = [
   "fox",
 ].map(capitalize);
 
-function getRandomElement(array) {
+function getRandomElement(array: string[]): string {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-export default function generateRandomString() {
+export default function generateRandomString(): string {
   const randomNumber = Math.floor(Math.random() * 1000) + 1;
 
   const randomAdjective = getRandomElement(adjectives);

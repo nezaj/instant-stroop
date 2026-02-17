@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import { useState, useEffect, useContext } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
 
 import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
@@ -8,16 +9,19 @@ import {
   infoTextColor,
 } from "@/components/shared/styles";
 import { chooseRandomColor, colorStyleMap } from "@/game";
+import type { RootStackParamList } from "@/Navigator";
 
 // Consts
 // ------------------
 const INITIAL_CLOCK = 5;
 const INITIAL_SCORE = 0;
 
+type Props = StackScreenProps<RootStackParamList, "Singleplayer">;
+
 // Screen
 // ------------------
-function Singleplayer({ navigation, route }) {
-  const user = useContext(UserContext);
+function Singleplayer({ navigation, route }: Props) {
+  const user = useContext(UserContext)!;
   const [clock, setClock] = useState(INITIAL_CLOCK);
   const [score, setScore] = useState(INITIAL_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
@@ -59,7 +63,7 @@ function Singleplayer({ navigation, route }) {
     }
   }, [clock]);
 
-  const onPress = (sqColor) => {
+  const onPress = (sqColor: string) => {
     if (sqColor == label) {
       setScore((prevScore) => prevScore + 1);
       setClock((prevClock) => prevClock + 1);
