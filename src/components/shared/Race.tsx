@@ -46,7 +46,7 @@ interface Player {
 }
 
 function extractPlayerPoints(points: Point[], playerId: string) {
-  return points.find((point) => point.userId === playerId)!.val;
+  return points.find((point) => point.userId === playerId)?.val ?? 0;
 }
 
 interface RaceProps {

@@ -21,7 +21,7 @@ import type { RootStackParamList } from "@/Navigator";
 
 const textStyle = "text-4xl text-center";
 
-const violet100 = "rgb(237 233 254);";
+const violet100 = "rgb(237 233 254)";
 const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;

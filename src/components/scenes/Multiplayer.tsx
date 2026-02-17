@@ -75,7 +75,7 @@ function Multiplayer({ route, navigation }: Props) {
         txs.push(db.tx.rooms[room.id].update({ currentGameId: null }));
       }
     }
-    db.transact([...txs]);
+    db.transact(txs);
   };
 
   const players = users.filter((u: any) => playerIds.includes(u.id));

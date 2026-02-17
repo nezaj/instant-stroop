@@ -6,7 +6,6 @@ import SafeView from "@/components/shared/SafeView";
 import {
   RegularButton,
   primaryBackgroundColor as bgColor,
-  infoTextColor as textColor,
 } from "@/components/shared/styles";
 import Race from "@/components/shared/Race";
 
