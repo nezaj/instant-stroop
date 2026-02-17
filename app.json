@@ -2,7 +2,6 @@
   "expo": {
     "name": "Stroopwafel",
     "slug": "instant-stroop",
-    "privacy": "unlisted",
     "version": "1.0.2",
     "orientation": "portrait",
     "scheme": "stroopwafel",
