@@ -35,27 +35,25 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
   });
 
   const game = data?.games?.[0] as any;
+  const room = game?.rooms?.[0];
 
   // Handle navigating away from game
   useEffect(() => {
     if (!navigation.isFocused()) return;
-    if (isLoading) {
-      return;
-    }
-    if (!game) {
+    if (isLoading) return;
+    if (!game || !room) {
       Toast.show("Oh no! Looks like this game was abruptly deleted.", {
         duration: Toast.durations.LONG,
       });
       navigation.navigate("Main");
       return;
     }
-  }, [isLoading, game]);
+  }, [isLoading, game, room]);
 
-  if (isLoading || !game) return <LoadingPlaceholder />;
+  if (isLoading || !game || !room) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
 
-  const { points, rooms, playerIds, users } = game;
-  const room = rooms[0];
+  const { points, playerIds, users } = game;
   const { code } = room;
 
   const rankedPoints = [...points].sort((a: any, b: any) => b.val - a.val);
@@ -63,9 +61,12 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
     xs[u.id] = u;
     return xs;
   }, {} as Record<string, any>);
-  const players = playerIds.map((playerId: string) => userMap[playerId]);
+  const players = playerIds
+    .map((playerId: string) => userMap[playerId])
+    .filter(Boolean);
   const top3 = rankedPoints
     .map((p: any, i: number) => [i, userMap[p.userId]] as const)
+    .filter(([, player]) => player)
     .slice(0, 3);
 
   return (
@@ -86,27 +87,29 @@ function GameOverMultiPlayer({ navigation, route }: Props) {
       <View className="flex-1 justify-center items-center gap-y-2">
         {top3.map(([rank, player]) => (
           <Text key={rank} className={`font-bold text-2xl ${textColor}`}>
-            {rankIcons[rank]} {player?.handle}
+            {rankIcons[rank]} {player.handle}
           </Text>
         ))}
       </View>
 
       {/* Buttons */}
       <View className="justify-center gap-y-4 my-4">
-        <RegularButton
-          onPress={() => {
-            db.transact(db.tx.rooms[room.id].update({ currentGameId: null }));
-            navigation.reset({
-              index: 1,
-              routes: [
-                { name: "Main" },
-                { name: "WaitingRoom", params: { code } },
-              ],
-            });
-          }}
-        >
-          Play Again
-        </RegularButton>
+        {code && (
+          <RegularButton
+            onPress={() => {
+              db.transact(db.tx.rooms[room.id].update({ currentGameId: null }));
+              navigation.reset({
+                index: 1,
+                routes: [
+                  { name: "Main" },
+                  { name: "WaitingRoom", params: { code } },
+                ],
+              });
+            }}
+          >
+            Play Again
+          </RegularButton>
+        )}
 
         <RegularButton
           onPress={() => {

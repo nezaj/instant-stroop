@@ -60,11 +60,14 @@ function JoinRoom({ route, navigation }: Props) {
 
   useEffect(() => {
     if (!joinRoom) return;
-    db.transact(db.tx.rooms[joinRoom.id].link({ users: user.id }));
-    const nextScreen = joinRoom.currentGameId
-      ? (["Multiplayer", { gameId: joinRoom.currentGameId }] as const)
-      : (["WaitingRoom", { code: joinRoom.code }] as const);
-    navigation.navigate(...nextScreen);
+    const join = async () => {
+      await db.transact(db.tx.rooms[joinRoom.id].link({ users: user.id }));
+      const nextScreen = joinRoom.currentGameId
+        ? (["Multiplayer", { gameId: joinRoom.currentGameId }] as const)
+        : (["WaitingRoom", { code: joinRoom.code }] as const);
+      navigation.navigate(...nextScreen);
+    };
+    join();
   }, [joinRoom?.code]);
 
   if (error) return <ErrorPlaceholder error={error} />;

@@ -52,8 +52,9 @@ function AppUser({ userId }: { userId: string }) {
           created_at: now(),
         })
       );
+      return; // Wait for the reactive query to update with the handle
     }
-    if (u) {
+    if (u && u.handle) {
       setUserExists(true);
     }
   }, [isLoading, data]);

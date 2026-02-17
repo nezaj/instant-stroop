@@ -29,13 +29,12 @@ function Multiplayer({ route, navigation }: Props) {
   });
 
   const game = data?.games?.[0] as any;
+  const room = game?.rooms?.[0];
 
   // Handle navigating away from game
   useEffect(() => {
     if (!navigation.isFocused()) return;
-    if (isLoading) {
-      return;
-    }
+    if (isLoading) return;
     if (!game) {
       Toast.show("Oh no! Looks like this game was abruptly deleted.", {
         duration: Toast.durations.LONG,
@@ -53,7 +52,7 @@ function Multiplayer({ route, navigation }: Props) {
   if (isLoading || !game) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
 
-  const { playerIds, colors, users, points, rooms } = game;
+  const { playerIds, colors, users, points } = game;
 
   const userPoints = points.find((p: any) => p.userId === user.id);
   const isSpectator = !userPoints;
@@ -71,11 +70,10 @@ function Multiplayer({ route, navigation }: Props) {
     let txs: any[] = [];
     txs.push(db.tx.points[pointsId].update({ val: newVal }));
     if (newVal === MULTIPLAYER_SCORE_TO_WIN) {
-      const roomId = rooms[0].id;
-      const updateGame = db.tx.games[gameId].update({ status: GAME_COMPLETED });
-      const updateRoom = db.tx.rooms[roomId].update({ currentGameId: null });
-      txs.push(updateGame);
-      txs.push(updateRoom);
+      txs.push(db.tx.games[gameId].update({ status: GAME_COMPLETED }));
+      if (room) {
+        txs.push(db.tx.rooms[room.id].update({ currentGameId: null }));
+      }
     }
     db.transact([...txs]);
   };
