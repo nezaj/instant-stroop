@@ -19,7 +19,6 @@
     "ios": {
       "supportsTablet": false,
       "associatedDomains": [
-        "applinks:stroopwafel.app",
         "applinks:stroopwafel.app"
       ],
       "bundleIdentifier": "com.jsventures.stroopwafel",
