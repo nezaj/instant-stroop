@@ -2,7 +2,7 @@
   "expo": {
     "name": "Stroopwafel",
     "slug": "instant-stroop",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "scheme": "stroopwafel",
     "icon": "./assets/icon.png",
@@ -19,10 +19,14 @@
     "ios": {
       "supportsTablet": false,
       "associatedDomains": [
+        "applinks:stroopwafel.app",
         "applinks:stroopwafel.app"
       ],
       "bundleIdentifier": "com.jsventures.stroopwafel",
-      "buildNumber": "6"
+      "buildNumber": "6",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

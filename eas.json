@@ -1,6 +1,7 @@
 {
   "cli": {
     "version": ">= 5.4.0",
+    "appVersionSource": "local",
     "promptToConfigurePushNotifications": false
   },
   "build": {
@@ -10,15 +11,24 @@
       "ios": {
         "simulator": true
       },
-      "channel": "debug"
+      "channel": "debug",
+      "env": {
+        "EXPO_PUBLIC_INSTANT_APP_ID": "532b13bd-eaf1-4f32-8499-fd500d773ed7"
+      }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_INSTANT_APP_ID": "532b13bd-eaf1-4f32-8499-fd500d773ed7"
+      }
     },
     "production": {
       "autoIncrement": true,
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_INSTANT_APP_ID": "532b13bd-eaf1-4f32-8499-fd500d773ed7"
+      }
     }
   },
   "submit": {
@@ -26,7 +36,7 @@
       "ios": {
         "appleId": "joe@js.ventures",
         "ascAppId": "6470153525",
-        "appleTeamId": " F7UXG9KL42"
+        "appleTeamId": "F7UXG9KL42"
       }
     }
   }
