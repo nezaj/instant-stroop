@@ -1,13 +1,13 @@
 /* Module containing game logic shared across app */
 
-import { transact, tx } from "@instantdb/react-native";
-import { now } from "./utils/time";
+import { db } from "@/lib/db";
+import { now } from "@/utils/time";
 
 export const GAME_IN_PROGRESS = "GAME_IN_PROGRESS";
 export const GAME_COMPLETED = "GAME_COMPLETED";
 export const MULTIPLAYER_SCORE_TO_WIN = 13;
 
-export const colorStyleMap = {
+export const colorStyleMap: Record<string, { color: string }> = {
   "text-red-400": { color: "rgb(248 113 113)" },
   "text-green-400": { color: "rgb(74 222 128)" },
   "text-blue-400": { color: "rgb(96 165 250)" },
@@ -27,13 +27,18 @@ export function generateGameColors(length = MULTIPLAYER_SCORE_TO_WIN + 1) {
   }));
 }
 
-export function leaveRoomTx(userId, room) {
+interface Room {
+  id: string;
+  hostId: string;
+}
+
+export function leaveRoomTx(userId: string, room: Room) {
   const { id: roomId, hostId } = room;
-  const leaveRoom = tx.rooms[roomId].unlink({ users: userId });
-  const deleteRoom = tx.rooms[roomId].update({
+  const leaveRoom = db.tx.rooms[roomId].unlink({ users: userId });
+  const deleteRoom = db.tx.rooms[roomId].update({
     code: null,
     deleted_at: now(),
   });
   const action = hostId === userId ? deleteRoom : leaveRoom;
-  transact(action);
+  db.transact(action);
 }

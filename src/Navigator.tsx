@@ -14,37 +14,50 @@ import {
   Singleplayer,
   WaitingRoom,
 } from "@/components/scenes";
-import { HEADER_TINT_COLOR } from "./components/shared/styles";
+import { HEADER_TINT_COLOR } from "@/components/shared/styles";
 
 // (XXX): React-Navigation sends noisy warnings. Let's disable it
 // See: https://github.com/react-navigation/react-navigation/issues/7839
 LogBox.ignoreLogs([
   "Sending `onAnimatedValueUpdate` with no listeners registered.",
 ]);
+
+export type RootStackParamList = {
+  Main: undefined;
+  Singleplayer: { resetGame: boolean };
+  GameOverSingleplayer: { score: number };
+  WaitingRoom: { code: string };
+  JoinRoom: { code?: string } | undefined;
+  Multiplayer: { gameId: string };
+  GameOverMultiplayer: { gameId: string };
+  HowToPlay: undefined;
+  Settings: undefined;
+};
+
 const DEFAULT_SCENE = "Main";
 export const DEEP_LINKS_CONFIG = {
   prefixes: [createURL("/"), "https://stroopwafel.app"],
   config: {
     screens: {
       Main: "main",
-      SinglePlayer: "play/:resetGame",
-      GameOverSinglePlayer: {
+      Singleplayer: "play/:resetGame",
+      GameOverSingleplayer: {
         path: "play/over/:score",
         parse: { score: Number },
       },
       WaitingRoom: "room/:code",
       JoinRoom: "join/:code",
-      Mulitplayer: "game/:gameId",
-      GameOverMultiPlayer: "game/:gameId/over",
+      Multiplayer: "game/:gameId",
+      GameOverMultiplayer: "game/:gameId/over",
       HowToPlay: "rules",
       Settings: "settings",
-      Main: "*",
     },
   },
 };
 
-const Stack = createStackNavigator();
-export default function Navigator({ user }) {
+const Stack = createStackNavigator<RootStackParamList>();
+
+export default function Navigator() {
   return (
     <Stack.Navigator
       initialRouteName={DEFAULT_SCENE}

@@ -3,11 +3,12 @@ import {
   View,
   Text,
   TextInput,
-  Animated,
 } from "react-native";
-import { useQuery, transact, tx } from "@instantdb/react-native";
-import React, { useState, useRef, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
+import Toast from "react-native-root-toast";
 
+import { db } from "@/lib/db";
 import SafeView from "@/components/shared/SafeView";
 import {
   primaryBackgroundColor as bgColor,
@@ -15,39 +16,30 @@ import {
   infoTextColor as textColor,
 } from "@/components/shared/styles";
 import {
-  LoadingPlaceholder,
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
+import type { RootStackParamList } from "@/Navigator";
 
 const textStyle = "text-4xl text-center";
 
-const violet100 = "rgb(237 233 254);";
+const violet100 = "rgb(237 233 254)";
 const red300 = "rgb(252, 165, 165)";
 const validColor = violet100;
 const invalidColor = red300;
 
-function JoinRoomButton({ isValidRoomCode, onPress }) {
-  const animatedValue = useRef(
-    new Animated.Value(isValidRoomCode ? 0 : 1)
-  ).current;
-  const interpolatedBackgroundColor = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [validColor, invalidColor],
-  });
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isValidRoomCode ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [isValidRoomCode]);
-
+function JoinRoomButton({
+  isValidRoomCode,
+  onPress,
+}: {
+  isValidRoomCode: boolean;
+  onPress: () => void;
+}) {
   return (
     <TouchableOpacity
       disabled={!isValidRoomCode}
       className={`${regularButtonStyle} my-4`}
-      style={{ backgroundColor: interpolatedBackgroundColor }}
+      style={{ backgroundColor: isValidRoomCode ? validColor : invalidColor }}
       onPress={onPress}
     >
       <Text className={`${textStyle}`}>Join</Text>
@@ -55,29 +47,40 @@ function JoinRoomButton({ isValidRoomCode, onPress }) {
   );
 }
 
-function JoinRoom({ route, navigation }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "JoinRoom">;
+
+function JoinRoom({ route, navigation }: Props) {
+  const user = useContext(UserContext)!;
   const [roomCode, setRoomCode] = useState(route.params?.code || "");
-  const [joinRoom, setJoinRoom] = useState(null);
-  const { error, data } = useQuery({
+  const [joinRoom, setJoinRoom] = useState<any>(null);
+  const { error, data } = db.useQuery({
     rooms: { $: { where: { code: roomCode } } },
   });
-  const room = data?.["rooms"]?.[0];
+  const room = data?.rooms?.[0];
 
   useEffect(() => {
     if (!joinRoom) return;
-    transact(tx.rooms[joinRoom.id].link({ users: user.id }));
-    const nextScreen = joinRoom.currentGameId
-      ? ["Multiplayer", { gameId: joinRoom.currentGameId }]
-      : ["WaitingRoom", { code: joinRoom.code }];
-    navigation.navigate(...nextScreen);
+    const join = async () => {
+      await db.transact(db.tx.rooms[joinRoom.id].link({ users: user.id }));
+      const nextScreen = joinRoom.currentGameId
+        ? (["Multiplayer", { gameId: joinRoom.currentGameId }] as const)
+        : (["WaitingRoom", { code: joinRoom.code }] as const);
+      navigation.navigate(...nextScreen);
+    };
+    join();
   }, [joinRoom?.code]);
 
   if (error) return <ErrorPlaceholder error={error} />;
 
+  const isKicked = room?.kickedIds?.includes(user.id);
+
   const handleJoin = () => {
-    // (XXX): We use an extra state variable to avoid a flicker. Otheriwse
-    // would have transacted here
+    if (isKicked) {
+      Toast.show("You were kicked from this room.", {
+        duration: Toast.durations.LONG,
+      });
+      return;
+    }
     setJoinRoom(room);
   };
 
@@ -99,7 +102,7 @@ function JoinRoom({ route, navigation }) {
           />
         </View>
         <View className="flex-1 justify-end">
-          <JoinRoomButton isValidRoomCode={!!room} onPress={handleJoin} />
+          <JoinRoomButton isValidRoomCode={!!room && !isKicked} onPress={handleJoin} />
         </View>
       </View>
     </SafeView>

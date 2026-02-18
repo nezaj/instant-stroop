@@ -1,7 +1,8 @@
 import { Text, View } from "react-native";
 import { useEffect, useContext } from "react";
-import { transact, tx } from "@instantdb/react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 
+import { db } from "@/lib/db";
 import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
 import {
@@ -9,25 +10,29 @@ import {
   primaryBackgroundColor as bgColor,
   infoTextColor as textColor,
 } from "@/components/shared/styles";
+import type { RootStackParamList } from "@/Navigator";
 
-function GameOverSingleplayer({ navigation, route }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "GameOverSingleplayer">;
+
+function GameOverSingleplayer({ navigation, route }: Props) {
+  const user = useContext(UserContext)!;
   const { score } = route.params;
-  const { id: userId, highScore } = user;
+  const { id: userId } = user;
+  const highScore = user.highScore ?? 0;
 
   useEffect(() => {
     if (score > highScore) {
-      transact(tx.users[userId].update({ highScore: score }));
+      db.transact(db.tx.$users[userId].update({ highScore: score }));
     }
   }, []);
-  const isHighScore = score > highScore ? true : false;
+  const isHighScore = score > highScore;
   const bestScore = isHighScore ? score : highScore;
 
   return (
     <SafeView className={`flex-1 px-8 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center">
-        <View className="justify-between space-y-1">
+        <View className="justify-between gap-y-1">
           <Text className={`font-bold text-xl ${textColor}`}>
             Best: {bestScore}
           </Text>
@@ -44,7 +49,7 @@ function GameOverSingleplayer({ navigation, route }) {
 
       {/* High Score */}
       {isHighScore && (
-        <View className="flex-1 justify-center items-center mt-16 space-y-16">
+        <View className="flex-1 justify-center items-center mt-16 gap-y-16">
           <Text className="font-bold text-3xl text-yellow-400">
             New High Score!
           </Text>
@@ -53,7 +58,7 @@ function GameOverSingleplayer({ navigation, route }) {
       )}
 
       {/* Buttons */}
-      <View className="flex-1 justify-end space-y-4 my-4">
+      <View className="flex-1 justify-end gap-y-4 my-4">
         <RegularButton
           onPress={() =>
             navigation.navigate("Singleplayer", { resetGame: true })

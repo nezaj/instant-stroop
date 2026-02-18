@@ -3,30 +3,59 @@ Stroopwafel is a casual multiplayer brain game made with React Native and Instan
 
 You can see Stroopwafel [live in the app store.](https://apps.apple.com/us/app/stroopwafel/id6470153525)
 
-
 ![](./docs/images/rules_2.png))
 ![](./docs/images/rules_3.png))
 
 
+## How the game works
+
+Players see a color label and must tap the matching colored square from a 2x2
+grid. Correct = +1 point. Wrong = -2 points (min 0). Supports singleplayer
+(beat the clock) and multiplayer (race to 13 points).
+
+**Stack**: Expo + React Native, NativeWind (Tailwind CSS), React Navigation
+(stack), InstantDB (real-time backend).
+
 ## Quickstart
 If you haven't already, you'll need to [install Expo Go](https://docs.expo.dev/get-started/expo-go/).
 
-After that go ahead and clone the repo and install the dependencies. From your terminal run
+After that clone the repo and install dependencies:
 
-```
-# Clone the repo
-git clone ...
+```bash
+# Clone repo
+git clone https://github.com/instantdb/instant-examples
 
-# change into the directory
-cd ...
+# Navigate into the todos example
+cd instant-examples/todos
 
 # Install dependencies
-npm i
+pnpm i
 ```
 
-Now you'll need to log in and head over to your dashboard on [Instant](https://instantdb.com) and generate a new `APP_ID`. Open up `src/App.js` and replace the placeholder value to your new ID.
+If you haven't already, be sure to log into the Instant CLI
+
+```bash
+pnpx instant-cli login
+```
+
+Now let's initialize a new app with the Instant CLI.
+
+```bash
+pnpx instant-cli init
+```
+
+We've provided a schema in `instant.schema.ts` that you can push to your app.
+You may have already pushed this during `init` in the previous step. If you
+answered 'no' to the prompt during init, or if you're unsure whether you pushed
+the schema, you can push it now.
+
+```bash
+pnpx instant-cli push
+```
+
 
 From there you should be ready to load up dev! From the project root
+
 ```
 make dev
 ```
@@ -58,85 +87,134 @@ make submit
 ## Android
 We tested on iOS only but getting Stroopwafel working in the play store should be straightforward. We'll update this repo with Android instructions in the future.
 
+## Screens
 
-## Reference
-Below is a non-exhaustive breakdown of each part of the app.
+| Screen | Purpose |
+|---|---|
+| **Main** | Menu hub -- Start, Create Game, Join Game, Rules, Profile |
+| **Singleplayer** | Solo game. Timer starts at 5s, +1s per correct answer. Ends when timer hits 0 |
+| **GameOverSingleplayer** | Shows score, updates high score if beaten, Play Again / Menu |
+| **WaitingRoom** | Multiplayer lobby. Host can start game and kick players. Others toggle ready |
+| **Multiplayer** | Active multiplayer game. Race component shows all players' progress |
+| **GameOverMultiplayer** | Rankings (top 3), Play Again (back to lobby) / Menu (leave room) |
+| **JoinRoom** | Enter 4-char room code to join. Validates room exists and user not kicked |
+| **HowToPlay** | Interactive tutorial explaining the Stroop Effect and game rules |
+| **Settings** | Change display name (3-16 chars, alphanumeric) |
 
-**App.js**
-
-This is root component of the app. Here we
-
-
-- init Instant
-- Create a user and persist them to Instant on first load
-- Load up the rest of the App
-
-**Navigator.js**
-
-We use React-Navigiation to manage navigating across all the screens in Stroopwafel. You can conceptually categories each screen as follows:
-
-
-- Main: This is the first screen we render when opening the app
-- Single Player
-    - Singleplayer — This is the actual game screen
-    - GameOverSingleplayer — This is the game over screen for singleplayer
-- Mulitplayer
-    - JoinRoom — Simple screen that prompts users for a room code to join a lobby
-    - WaitingRoom — This is the lobby screen before a game beings
-    - Mulitplayer — This is the game screen for mulitplayer
-    - GameOverMulitplayer — This is the game over screen for mulitplayer
-- Misc
-    - HowToPlay — This screen explains how to play Stroopwafel
-    - Settings — Another simple screen, allows users to change their handles.
-
-**Components/scenes**
-
-This is the meat and potatoes of the app. You’ll notice most of the code is front-end focused. Querying and mutating data is done through Instant and is very light-weight. Looks through these components to see different examples of [InstaQL](https://docs.instantdb.com/docs/instaql) and [InstaML](https://docs.instantdb.com/docs/instaml).
-
-Here’s the data model for the app
+## Navigation Flow
 
 ```
-users {
-  handle: string,
-  highScore: int,
-  created_at: string,
-}
-
-rooms {
-  code: string?,
-  currentGameId: uuid,
-  readyIds: [uuid],
-  kickedIds: [uuid],
-  hostId: uuid,
-  created_at: string,
-  deleted_at: string,
-  :has_many users
-}
-
-games {
-  status: "IN_PROGRESS" | "COMPLETED",
-  colors: [[text: string, color: string]]
-  playerIds: [uuid],
-  created_at: string,
-  :belongs_to rooms
-}
-
-points {
-  userId: uuid,
-  val: int,
-  :belongs_to games
-}
+Main
+ |
+ |-- Start -----------> Singleplayer ---> GameOverSingleplayer
+ |                                             |         |
+ |                          (Play Again) <-----+         |
+ |                                                       |
+ |   (Menu) <--------------------------------------------+
+ |
+ |-- Create Game -----> WaitingRoom -----> Multiplayer ---> GameOverMultiplayer
+ |                        ^    |                                  |         |
+ |   (Leave / Menu) <----/    |           (Play Again) ----------+         |
+ |                            |                                            |
+ |   (Menu) <---------------------------------------------------------+
+ |
+ |-- Join Game -------> JoinRoom ----> WaitingRoom (or Multiplayer if game in progress)
+ |
+ |-- Rules -----------> HowToPlay
+ |
+ +-- Profile ---------> Settings
 ```
 
-Some components of note:
+## Multiplayer Game State Flow
 
+```
+                    Host creates room
+                          |
+                          v
+         +---------> WAITING ROOM <---------+
+         |           (lobby)                 |
+         |              |                    |
+    Players join     Host kicks        Play Again
+    via room code    a player        (from game over)
+         |              |                    |
+         |              v                    |
+         |       Player removed              |
+         |       (kickedIds updated)         |
+         |                                   |
+         |         Host clicks Start         |
+         |              |                    |
+         |              v                    |
+         |        GAME IN PROGRESS           |
+         |       (race to 13 pts)            |
+         |              |                    |
+         |     Player reaches 13 pts         |
+         |              |                    |
+         |              v                    |
+         |        GAME COMPLETED             |
+         |              |                    |
+         |              v                    |
+         |        GAME OVER SCREEN ----------+
+         |              |
+         |         Menu button
+         |              |
+         |              v
+         +--------- MAIN MENU
+```
 
-- Main.js — Shows how to create a new room and associate it with a user.
-- GameOverSingleplayer.js — Shows how to update a user’s highscore
-- WaitingRoom.js — Shows to update multiple models in one transaction. Also shows how to fetch a specific model and a relation with `useQuery`
-- Multiplayer.js — Shows how to fetch multiple relations for a namespace. Also shows how to easily update users scores. What’s especially nice about this is you can just update a user’s score, and Instant takes care of updating everyone else through the power of `useQuery`
+## Data Model (InstantDB)
 
-Note: Currently Instant does not support permissions. Once permissions is released, will integrate them into Stroopwafel
+```
+$users (managed by Instant)
+  email: any (built-in, unique, indexed)
+  handle: string (optional)
+  highScore: number (optional)
+  created_at: string (optional)
+
+rooms
+  code: string (indexed, optional)
+  hostId: string
+  readyIds: json (array of user IDs)
+  kickedIds: json (array of user IDs)
+  currentGameId: string (optional)
+  created_at: string
+  deleted_at: string (optional, soft delete)
+
+games
+  status: string ("GAME_IN_PROGRESS" | "GAME_COMPLETED")
+  playerIds: json (array of user IDs)
+  colors: json (array of {color, label})
+  created_at: string
+
+points
+  val: number (current score)
+  userId: string
+
+Links:
+  rooms <--many-to-many--> $users
+  games <--many-to-many--> $users
+  games <--many-to-many--> rooms
+  games <--one-to-many----> points
+```
+
+## Auth & Permissions
+
+**Auth**: Guest auth via `db.auth.signInAsGuest()`. Instant creates a managed
+`$users` record automatically; the app sets `handle`, `highScore`, and
+`created_at` on first login. Auth tokens are persisted by the SDK. Users can
+later upgrade to a full account (email) without losing data.
+
+**Permissions** (`instant.perms.ts`):
+
+| Namespace | Rule | Purpose |
+|---|---|---|
+| `attrs` | `create: false` | Lock down schema; no new attributes from clients |
+| `$users` | `update: auth.id == data.id` | Only you can update your own profile |
+| `$users` | `fields.email: auth.id == data.id` | Only you can see your own email |
+| `rooms` | `update: isHost \|\| onlyMemberFields` | Host has full control; members can only toggle ready / clear currentGameId |
+| `games` | `update: onlyMutableFields` | Only `status` can change after creation (prevents tampering with playerIds/colors) |
+| `points` | `update: isOwner && onlyMutableFields` | Only the point owner can update `val` (prevents score manipulation) |
+| All | `delete: false` | No hard deletes (rooms use soft delete via `deleted_at`) |
+
 
 ## Say Hello!
 Do you want to build your own apps with Instant? If so, hopefully this repo has been helpful for you! We love hearing feedback and what folks want to build. Come say hello  [on our discord!](https://discord.gg/VU53p7uQcE)

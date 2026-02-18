@@ -26,7 +26,7 @@ const nouns = [
   "fox",
 ].map(capitalize);
 
-function getRandomElement(array) {
+function getRandomElement(array: string[]) {
   return array[Math.floor(Math.random() * array.length)];
 }
 

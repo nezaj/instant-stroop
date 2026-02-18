@@ -1,10 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { HeaderBackButton } from "@react-navigation/elements";
-import { transact, tx, useQuery, id } from "@instantdb/react-native";
+import { id } from "@instantdb/react-native";
+import { StackScreenProps } from "@react-navigation/stack";
 import Toast from "react-native-root-toast";
 import * as Clipboard from "expo-clipboard";
 
+import { db } from "@/lib/db";
 import { GAME_IN_PROGRESS, generateGameColors, leaveRoomTx } from "@/game";
 import SafeView from "@/components/shared/SafeView";
 import { avatarColor } from "@/utils/profile";
@@ -19,52 +21,67 @@ import {
   ErrorPlaceholder,
 } from "@/components/shared/Placeholder";
 import { UserContext } from "@/Context";
+import type { RootStackParamList } from "@/Navigator";
 
-function userSort(a, b) {
-  // Host comes first
+interface UserWithRole {
+  id: string;
+  handle: string;
+  isHost: boolean;
+  isYou: boolean;
+}
+
+function userSort(a: UserWithRole, b: UserWithRole) {
   if (a.isHost) return -1;
   if (b.isHost) return 1;
-
-  // You comes second
   if (a.isYou) return -1;
   if (b.isYou) return 1;
-
-  // Sort the rest alphabetically by handle
   return a.handle.localeCompare(b.handle);
 }
 
-function startMultiplayerGame(room) {
+function startMultiplayerGame(room: any) {
   const gameId = id();
   const { users } = room;
   const colors = generateGameColors();
 
   const playerIds = users
-    .filter((u) => u.id === room.hostId || room.readyIds.includes(u.id))
-    .map((u) => u.id);
-  const createGame = tx.games[gameId].update({
+    .filter((u: any) => u.id === room.hostId || room.readyIds.includes(u.id))
+    .map((u: any) => u.id);
+
+  // Create points with unique IDs for each player
+  const pointEntries = playerIds.map((playerId: string) => ({
+    pointId: id(),
+    playerId,
+  }));
+  const createPoints = pointEntries.map(({ pointId, playerId }: { pointId: string; playerId: string }) =>
+    db.tx.points[pointId].update({ val: 0, userId: playerId })
+  );
+
+  // Chain all links onto the game entity to avoid duplicate record errors
+  let createGame: any = db.tx.games[gameId].update({
     status: GAME_IN_PROGRESS,
     playerIds,
     colors,
     created_at: now(),
   });
-  const addUserGameLinks = users.map((u) =>
-    tx.games[gameId].link({ users: u.id })
-  );
-  const createPoints = playerIds.map((playerId) =>
-    tx.points[id()].update({ val: 0, userId: playerId }).link({ games: gameId })
-  );
-  const updateRoom = tx.rooms[room.id]
+  for (const u of users) {
+    createGame = createGame.link({ users: u.id });
+  }
+  for (const { pointId } of pointEntries) {
+    createGame = createGame.link({ points: pointId });
+  }
+
+  const updateRoom = db.tx.rooms[room.id]
     .update({
       currentGameId: gameId,
       readyIds: [],
     })
     .link({ games: gameId });
 
-  transact([createGame, ...addUserGameLinks, ...createPoints, updateRoom]);
+  db.transact([createGame, ...createPoints, updateRoom]);
 }
 
-function InviteButton({ code }) {
-  async function copy(code) {
+function InviteButton({ code }: { code: string }) {
+  async function copy(code: string) {
     await Clipboard.setStringAsync(
       `Let's play Stroopwafel! You can join my room at
 
@@ -79,43 +96,47 @@ https://stroopwafel.app/join/${code}`
   );
 }
 
-function UserPill({ user, room, isReady, isAdmin }) {
+interface UserPillProps {
+  user: UserWithRole;
+  room: any;
+  isReady: boolean;
+  isAdmin: boolean;
+}
+
+function UserPill({ user, room, isReady, isAdmin }: UserPillProps) {
   const { isYou, isHost, id: userId, handle } = user;
   const { id: roomId, readyIds, kickedIds } = room;
 
-  // Avatar
   const avatarStyle = avatarColor(handle);
 
-  // Title
-  let title = [];
+  let title: string[] = [];
   if (isHost) {
     title.push("Host");
   }
   if (isYou) {
     title.push("You");
   }
-  title = title.join(", ");
+  const titleStr = title.join(", ");
 
-  // Ready Indicator
   const readyDot = isHost || isReady ? "bg-green-400" : "bg-slate-700";
 
   return (
     <View className="flex-row rounded-xl border-2 border-violet-300 items-center my-2 py-4">
       <View className={`mx-4 w-12 h-12 ${avatarStyle} rounded-full`} />
-      <View className="flex-1 space-y-1">
+      <View className="flex-1 gap-y-1">
         <Text className="text-lg text-slate-100 font-bold">{handle}</Text>
-        <Text className="text-md text-slate-100 font-semibold">{title}</Text>
+        <Text className="text-md text-slate-100 font-semibold">{titleStr}</Text>
       </View>
       <View className="justify-end">
         {isAdmin && !isYou && (
           <TouchableOpacity
             className="bg-red-400 rounded-full"
             onPress={() =>
-              transact(
-                tx.rooms[roomId]
+              db.transact(
+                db.tx.rooms[roomId]
                   .update({
                     kickedIds: [...kickedIds, userId],
-                    readyIds: readyIds.filter((x) => x !== userId),
+                    readyIds: readyIds.filter((x: string) => x !== userId),
                   })
                   .unlink({ users: userId })
               )
@@ -130,13 +151,15 @@ function UserPill({ user, room, isReady, isAdmin }) {
   );
 }
 
-function WaitingRoom({ route, navigation }) {
-  const user = useContext(UserContext);
+type Props = StackScreenProps<RootStackParamList, "WaitingRoom">;
+
+function WaitingRoom({ route, navigation }: Props) {
+  const user = useContext(UserContext)!;
   const { code } = route.params;
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data } = db.useQuery({
     rooms: { users: {}, $: { where: { code: code } } },
   });
-  const room = data?.rooms?.[0];
+  const room = data?.rooms?.[0] as any;
   const isAdmin = room?.hostId === user.id;
 
   // Set up leave button
@@ -147,7 +170,8 @@ function WaitingRoom({ route, navigation }) {
           tintColor={HEADER_TINT_COLOR}
           label="Leave"
           onPress={() => {
-            leaveRoomTx(user.id, room, navigation);
+            if (room) leaveRoomTx(user.id, room);
+            navigation.navigate("Main");
           }}
         />
       ),
@@ -156,6 +180,7 @@ function WaitingRoom({ route, navigation }) {
 
   // Handle navigating away from rooms
   useEffect(() => {
+    if (!navigation.isFocused()) return;
     if (isLoading) {
       return;
     }
@@ -166,14 +191,14 @@ function WaitingRoom({ route, navigation }) {
       navigation.navigate("Main");
       return;
     }
-    if (!room.users.find((u) => u.id === user.id)) {
-      navigation.navigate("Main");
-      return;
-    }
     if (room.kickedIds.includes(user.id)) {
       Toast.show("You were kicked from the room 🤷‍♂️.", {
         duration: Toast.durations.SHORT,
       });
+      navigation.navigate("Main");
+      return;
+    }
+    if (room.users.length > 0 && !room.users.find((u: any) => u.id === user.id)) {
       navigation.navigate("Main");
       return;
     }
@@ -187,14 +212,12 @@ function WaitingRoom({ route, navigation }) {
   if (isLoading || !room) return <LoadingPlaceholder />;
   if (error) return <ErrorPlaceholder error={error} />;
 
-  const users = room.users
-    .map((u) => {
-      return {
-        ...u,
-        isHost: room.hostId === u.id,
-        isYou: u.id === user.id,
-      };
-    })
+  const users: UserWithRole[] = room.users
+    .map((u: any) => ({
+      ...u,
+      isHost: room.hostId === u.id,
+      isYou: u.id === user.id,
+    }))
     .sort(userSort);
 
   const isReady = room.readyIds.includes(user.id);
@@ -219,7 +242,7 @@ function WaitingRoom({ route, navigation }) {
             })}
           </View>
         </ScrollView>
-        <View className="flex-1 justify-end space-y-4">
+        <View className="flex-1 justify-end gap-y-4">
           <InviteButton code={room.code} />
           {isAdmin ? (
             <RegularButton onPress={() => startMultiplayerGame(room)}>
@@ -229,14 +252,14 @@ function WaitingRoom({ route, navigation }) {
             <RegularButton
               onPress={() => {
                 const { id: roomId, readyIds } = room;
-                const markReady = tx.rooms[roomId].update({
+                const markReady = db.tx.rooms[roomId].update({
                   readyIds: [...readyIds, user.id],
                 });
-                const markNotReady = tx.rooms[roomId].update({
-                  readyIds: readyIds.filter((x) => x !== user.id),
+                const markNotReady = db.tx.rooms[roomId].update({
+                  readyIds: readyIds.filter((x: string) => x !== user.id),
                 });
                 const toggleReady = isReady ? markNotReady : markReady;
-                transact(toggleReady);
+                db.transact(toggleReady);
               }}
             >
               {readyText}

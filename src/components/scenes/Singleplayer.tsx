@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity } from "react-native";
 import { useState, useEffect, useContext } from "react";
+import { StackScreenProps } from "@react-navigation/stack";
 
 import { UserContext } from "@/Context";
 import SafeView from "@/components/shared/SafeView";
@@ -8,16 +9,19 @@ import {
   infoTextColor,
 } from "@/components/shared/styles";
 import { chooseRandomColor, colorStyleMap } from "@/game";
+import type { RootStackParamList } from "@/Navigator";
 
 // Consts
 // ------------------
 const INITIAL_CLOCK = 5;
 const INITIAL_SCORE = 0;
 
+type Props = StackScreenProps<RootStackParamList, "Singleplayer">;
+
 // Screen
 // ------------------
-function Singleplayer({ navigation, route }) {
-  const user = useContext(UserContext);
+function Singleplayer({ navigation, route }: Props) {
+  const user = useContext(UserContext)!;
   const [clock, setClock] = useState(INITIAL_CLOCK);
   const [score, setScore] = useState(INITIAL_SCORE);
   const [label, setLabel] = useState(chooseRandomColor());
@@ -34,12 +38,13 @@ function Singleplayer({ navigation, route }) {
       setScore(INITIAL_SCORE);
       setLabel(chooseRandomColor());
       setColor(chooseRandomColor());
-      route.params.resetGame = false;
+      navigation.setParams({ resetGame: false });
     }
   }, [resetGame]);
 
   // Countdown
   useEffect(() => {
+    if (clock === 0) return;
     const timer = setInterval(() => {
       setClock((prevClock) => {
         if (prevClock < 2) {
@@ -50,7 +55,7 @@ function Singleplayer({ navigation, route }) {
     }, 600);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [clock === 0]);
 
   // End Game
   useEffect(() => {
@@ -59,8 +64,8 @@ function Singleplayer({ navigation, route }) {
     }
   }, [clock]);
 
-  const onPress = (sqColor) => {
-    if (sqColor == label) {
+  const onPress = (sqColor: string) => {
+    if (sqColor === label) {
       setScore((prevScore) => prevScore + 1);
       setClock((prevClock) => prevClock + 1);
       setLabel(chooseRandomColor());
@@ -74,7 +79,7 @@ function Singleplayer({ navigation, route }) {
     <SafeView className={`flex-1 ${bgColor}`}>
       {/* Top Bar */}
       <View className="flex-row justify-between items-center px-8">
-        <View className="justify-between space-y-1">
+        <View className="justify-between gap-y-1">
           <Text className={`font-bold text-xl ${infoTextColor}`}>
             Best: {highScore}
           </Text>
@@ -93,23 +98,27 @@ function Singleplayer({ navigation, route }) {
       </View>
 
       {/* Grid Boxes */}
-      <View className="flex-1 flex-row flex-wrap justify-center mx-8">
-        <TouchableOpacity
-          onPress={() => onPress("red")}
-          className="w-28 h-28 bg-red-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("green")}
-          className="w-28 h-28 bg-green-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("blue")}
-          className="w-28 h-28 bg-blue-400 m-1"
-        ></TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => onPress("yellow")}
-          className="w-28 h-28 bg-yellow-400 m-1"
-        ></TouchableOpacity>
+      <View className="flex-1 justify-center items-center">
+        <View className="flex-row">
+          <TouchableOpacity
+            onPress={() => onPress("red")}
+            className="w-28 h-28 bg-red-400 m-1"
+          ></TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPress("green")}
+            className="w-28 h-28 bg-green-400 m-1"
+          ></TouchableOpacity>
+        </View>
+        <View className="flex-row">
+          <TouchableOpacity
+            onPress={() => onPress("blue")}
+            className="w-28 h-28 bg-blue-400 m-1"
+          ></TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onPress("yellow")}
+            className="w-28 h-28 bg-yellow-400 m-1"
+          ></TouchableOpacity>
+        </View>
       </View>
     </SafeView>
   );
