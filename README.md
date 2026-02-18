@@ -87,19 +87,16 @@ make submit
 ## Android
 We tested on iOS only but getting Stroopwafel working in the play store should be straightforward. We'll update this repo with Android instructions in the future.
 
-## Screens
 
-| Screen | Purpose |
-|---|---|
-| **Main** | Menu hub -- Start, Create Game, Join Game, Rules, Profile |
-| **Singleplayer** | Solo game. Timer starts at 5s, +1s per correct answer. Ends when timer hits 0 |
-| **GameOverSingleplayer** | Shows score, updates high score if beaten, Play Again / Menu |
-| **WaitingRoom** | Multiplayer lobby. Host can start game and kick players. Others toggle ready |
-| **Multiplayer** | Active multiplayer game. Race component shows all players' progress |
-| **GameOverMultiplayer** | Rankings (top 3), Play Again (back to lobby) / Menu (leave room) |
-| **JoinRoom** | Enter 4-char room code to join. Validates room exists and user not kicked |
-| **HowToPlay** | Interactive tutorial explaining the Stroop Effect and game rules |
-| **Settings** | Change display name (3-16 chars, alphanumeric) |
+## Screens
+Some screens of note:
+
+- Main.js — Shows how to create a new room and associate it with a user.
+- GameOverSingleplayer.js — Shows how to update a user’s highscore
+- WaitingRoom.js — Shows to update multiple models in one transaction. Also shows how to fetch a specific model and a relation with `useQuery`
+- Multiplayer.js — Shows how to fetch multiple relations for a namespace. Also shows how to easily update users scores. What’s especially nice about this is you can just update a user’s score, and Instant takes care of updating everyone else through the power of `useQuery`
+
+There are a few additional screens that are pretty straightforward (JoinRoom, HowToPlay, Settings) but feel free to check out the code if you’re curious about how they work!
 
 ## Navigation Flow
 
@@ -165,7 +162,6 @@ Main
 
 ```
 $users (managed by Instant)
-  email: any (built-in, unique, indexed)
   handle: string (optional)
   highScore: number (optional)
   created_at: string (optional)
@@ -197,11 +193,9 @@ Links:
 ```
 
 ## Auth & Permissions
-
-**Auth**: Guest auth via `db.auth.signInAsGuest()`. Instant creates a managed
-`$users` record automatically; the app sets `handle`, `highScore`, and
-`created_at` on first login. Auth tokens are persisted by the SDK. Users can
-later upgrade to a full account (email) without losing data.
+We use Instant's guest auth as a way to uniquely identify users without requiring a sign-up flow. This keeps friction low and allows us to associate game data with
+specific users (like high scores and room memberships) without needing
+for email or social logins.
 
 **Permissions** (`instant.perms.ts`):
 
